@@ -35,20 +35,26 @@ public class Neo4JJavaDbOperation {
 
 			db.execute("MATCH (n) DETACH DELETE n");
 
-			Node taskA = db.createNode(Tasks.TASKA);
-			Node taskB = db.createNode(Tasks.TASKB);
-			Node taskC = db.createNode(Tasks.TASKC);
-			Node taskD = db.createNode(Tasks.TASKD);
+			Node taskA = db.createNode(Tasks.ENV_SETUP);
+			Node taskB = db.createNode(Tasks.DATA_STAGING);
+			Node taskC = db.createNode(Tasks.JOB_SUBMISSION);
+			Node taskD = db.createNode(Tasks.MONITORING);
 
 			taskB.setProperty("prop", "aaa");
 			taskA.setProperty("test","test");
 		
 
-			taskA.createRelationshipTo(taskB, TaskRelationships.SENDS_DATA);
-			taskB.createRelationshipTo(taskC, TaskRelationships.SENDS_DATA);
-			Result execResult = db.execute("MATCH path= (a:TASKA)-[:SENDS_DATA*]-(root:TASKC) RETURN path");
+			taskA.createRelationshipTo(taskB, TaskRelationships.CONNECTION);
+			taskB.createRelationshipTo(taskC, TaskRelationships.CONNECTION);
+			Result execResult = db.execute("MATCH path= (a:ENV_SETUP)-[:CONNECTION*]-(root:JOB_SUBMISSION) RETURN path");
 			String results = ((ExecutionResult) execResult).dumpToString();
 			System.out.println(results);
+			/*
+			 * TODO:
+			 * Crate scheduler message context based on task and publish it to queue
+			 * Identify what data a node can accommodate
+			 * How orchestrator gets the data
+			 */
 			tx.success();
 		}
 
