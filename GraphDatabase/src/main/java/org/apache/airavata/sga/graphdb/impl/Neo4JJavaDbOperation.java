@@ -4,6 +4,9 @@ import static java.lang.System.currentTimeMillis;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.neo4j.cypher.internal.javacompat.ExecutionResult;
@@ -33,22 +36,38 @@ public class Neo4JJavaDbOperation {
 
 		try (Transaction tx = db.beginTx()) {
 
-			db.execute("MATCH (n) DETACH DELETE n");
+//			db.execute("MATCH (n) DETACH DELETE n");
+//
+//			Node taskA = db.createNode(Tasks.ENV_SETUP);
+//			Node taskB = db.createNode(Tasks.DATA_STAGING);
+//			Node taskC = db.createNode(Tasks.JOB_SUBMISSION);
+//			Node taskD = db.createNode(Tasks.MONITORING);
+//
+//			taskB.setProperty("prop", "aaa");
+//			taskA.setProperty("test","test");
+//
+//
+//			taskA.createRelationshipTo(taskB, TaskRelationships.CONNECTION);
+//			taskB.createRelationshipTo(taskC, TaskRelationships.CONNECTION);
+//			Result execResult = db.execute("MATCH path= (a:ENV_SETUP)-[:CONNECTION*]-(root:JOB_SUBMISSION) RETURN path");
+//			String results = ((ExecutionResult) execResult).dumpToString();
+//			System.out.println(results);
 
-			Node taskA = db.createNode(Tasks.ENV_SETUP);
-			Node taskB = db.createNode(Tasks.DATA_STAGING);
-			Node taskC = db.createNode(Tasks.JOB_SUBMISSION);
-			Node taskD = db.createNode(Tasks.MONITORING);
+			Result execResult = db.execute("MATCH path= (a)-[:BIOLOGY*]-(b) RETURN collect(distinct labels(b))");
+			Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
+			db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
 
-			taskB.setProperty("prop", "aaa");
-			taskA.setProperty("test","test");
-		
 
-			taskA.createRelationshipTo(taskB, TaskRelationships.CONNECTION);
-			taskB.createRelationshipTo(taskC, TaskRelationships.CONNECTION);
-			Result execResult = db.execute("MATCH path= (a:ENV_SETUP)-[:CONNECTION*]-(root:JOB_SUBMISSION) RETURN path");
-			String results = ((ExecutionResult) execResult).dumpToString();
-			System.out.println(results);
+			Map<String, Object> results = ((ExecutionResult) execResult).next();
+			String dag = null;
+
+			for (Map.Entry<String, Object> string : results.entrySet()) {
+				dag = string.getValue().toString();
+			}
+			List<String> nodes = Arrays.asList(dag.substring(1, dag.length()-1).split(", "));
+			for (String string : nodes) {
+				System.out.println(string);
+			}
 			/*
 			 * TODO:
 			 * Crate scheduler message context based on task and publish it to queue

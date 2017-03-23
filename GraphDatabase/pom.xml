@@ -13,11 +13,26 @@
 		<junit.version>4.11</junit.version>
 		<thrift.version>0.9.3</thrift.version>
 		<jcraft.version>0.1.53</jcraft.version>
+		<jpa.version>2.4.2</jpa.version>
+		<mysql_version>6.0.5</mysql_version>
 		<workloadcommons.version>0.0.1-SNAPSHOT</workloadcommons.version>
 		<messaging.version>0.0.1-SNAPSHOT</messaging.version>
 	</properties>
 	
 	<dependencies>
+		<!-- MySQL DB -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql_version}</version>
+		</dependency>
+
+		<!-- JPA -->
+		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa</artifactId>
+			<version>${jpa.version}</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
 		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-cypher -->
 		<dependency>
@@ -72,7 +87,12 @@
 	</dependencies>
 
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -81,6 +101,34 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.openjpa</groupId>
+				<artifactId>openjpa-maven-plugin</artifactId>
+				<version>${jpa.version}</version>
+				<configuration>
+					<includes>src/main/java/org/apache/airavata/sga/graphdb/entity/*.class</includes>
+					<addDefaultConstructor>true</addDefaultConstructor>
+					<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>enhancer</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>enhance</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.openjpa</groupId>
+						<artifactId>openjpa</artifactId>
+						<!-- set the version to be the same as the level in your runtime -->
+						<version>${jpa.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 		</plugins>
