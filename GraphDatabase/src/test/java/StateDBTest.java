@@ -39,7 +39,7 @@ public class StateDBTest {
 
     public void getState(){
         try {
-            System.out.println(DAO.getState(1, TaskRelationships.BIOLOGY.toString()));
+            System.out.println(DAO.getState(1));
         } catch (Exception e) {
             e.printStackTrace();
         }

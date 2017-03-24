@@ -60,4 +60,13 @@ public class Constants {
                 .setExchangeType(RabbitMQProperties.EXCHANGE_TYPE.TOPIC);
     }
 
+    public static Tasks fromString(String text) {
+        for (Tasks b : Tasks.values()) {
+            if (b.name().equalsIgnoreCase(text)) {
+                return b;
+            }
+        }
+        return null;
+    }
+
 }

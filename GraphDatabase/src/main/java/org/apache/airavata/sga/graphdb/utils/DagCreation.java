@@ -12,6 +12,9 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
+import org.apache.airavata.sga.graphdb.utils.Tasks;
+import org.apache.airavata.sga.graphdb.utils.TaskRelationships;
+
 public class DagCreation {
 
 
@@ -28,7 +31,7 @@ public class DagCreation {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		File f = new File("C:\\TPNeo4jDBTest");
+		File f = new File("C:\\Neo4j");
 		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
 		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
 

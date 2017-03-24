@@ -11,7 +11,7 @@ public interface EntityDAO {
 
     public void saveEntity(Object entity) throws Exception;
 
-    public int updateState(org.apache.airavata.sga.graphdb.entity.State State) throws Exception;
+    public int updateState(State State) throws Exception;
 
-    public String getState(Integer StateId, String task) throws Exception;
+    public State getState(Integer StateId) throws Exception;
 }

@@ -84,8 +84,8 @@ public class EntityDAOImpl implements EntityDAO{
     }
 
     @Override
-    public String getState(Integer expId, String expType) throws Exception {
-        String state = null;
+    public State getState(Integer expId) throws Exception {
+        State state = null;
         try {
             // Connection details loaded from persistence.xml to create EntityManagerFactory.
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa-state");
@@ -97,8 +97,8 @@ public class EntityDAOImpl implements EntityDAO{
 
             tx.begin();
 
-            Query query = em.createQuery("SELECT s.state FROM State s WHERE s.ID ="+ expId + " AND s.expType =\"" + expType + "\"");
-            state = query.getSingleResult().toString();
+            Query query = em.createQuery("SELECT s FROM State s WHERE s.ID ="+ expId);
+            state = (State) query.getSingleResult();
 
             // Committing transaction.
             tx.commit();
