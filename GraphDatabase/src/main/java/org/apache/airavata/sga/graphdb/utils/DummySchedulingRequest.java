@@ -144,7 +144,7 @@ public class DummySchedulingRequest {
         return request;
     }
 
-    public static SchedulingRequest getSchedulingRequest(Tasks task){
+    public static SchedulingRequest getSchedulingRequest(States task){
         switch (task){
             case ENV_SETUP:return getEnvironmentSetupSchedulingRequest();
             case DATA_STAGING:return getDataStagingSchedulingRequest();

@@ -1,8 +1,8 @@
 import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
 import org.apache.airavata.sga.graphdb.entity.State;
-import org.apache.airavata.sga.graphdb.utils.TaskRelationships;
-import org.apache.airavata.sga.graphdb.utils.Tasks;
+import org.apache.airavata.sga.graphdb.utils.ExpTypes;
+import org.apache.airavata.sga.graphdb.utils.States;
 
 /**
  * Created by Amruta on 3/23/2017.
@@ -14,8 +14,8 @@ public class StateDBTest {
     public void saveState(){
         State state = new State();
         state.setID(1);
-        state.setState(Tasks.ENV_SETUP.toString());
-        state.setExpType(TaskRelationships.BIOLOGY.toString());
+        state.setState(States.ENV_SETUP.toString());
+        state.setExpType(ExpTypes.BIOLOGY.toString());
 
         try {
             DAO.saveEntity(state);
@@ -27,8 +27,8 @@ public class StateDBTest {
     public void updateState(){
         State state = new State();
         state.setID(1);
-        state.setState(Tasks.ENV_SETUP.toString());
-        state.setExpType(TaskRelationships.CHEMISTRY.toString());
+        state.setState(States.ENV_SETUP.toString());
+        state.setExpType(ExpTypes.CHEMISTRY.toString());
 
         try {
             DAO.updateState(state);

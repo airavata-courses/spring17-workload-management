@@ -4,27 +4,20 @@ import static java.lang.System.currentTimeMillis;
 
 import java.io.File;
 import java.sql.Connection;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.mysql.cj.core.util.TestUtils;
 import org.apache.airavata.sga.commons.model.SchedulingRequest;
 import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
 import org.apache.airavata.sga.graphdb.entity.State;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
-import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagingFactory;
 import org.apache.airavata.sga.graphdb.utils.Constants;
 import org.apache.airavata.sga.graphdb.utils.DummySchedulingRequest;
-import org.apache.airavata.sga.graphdb.utils.TaskRelationships;
-import org.apache.airavata.sga.graphdb.utils.Tasks;
-import org.apache.airavata.sga.messaging.service.core.Publisher;
-import org.apache.airavata.sga.messaging.service.util.MessageContext;
+import org.apache.airavata.sga.graphdb.utils.ExpTypes;
+import org.apache.airavata.sga.graphdb.utils.States;
 import org.neo4j.cypher.internal.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
@@ -68,8 +61,10 @@ public class Neo4JJavaDbOperation {
 			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally{
+			db.shutdown();
 		}
-		return dag.getValue().toString();
+		return dag.getValue().toString().substring(1,dag.getValue().toString().length()-1);
 	}
 
 	public String getNextNode(String state, String expType){
@@ -81,9 +76,11 @@ public class Neo4JJavaDbOperation {
 		Map.Entry<String,Object> dag = null;
 		try (Transaction tx = db.beginTx()) {
 
-			Result execResult = db.execute("MATCH path= (a:"+state+")-[:"+expType+"*1]-(b) RETURN collect(distinct labels(b))");
+			Result execResult = db.execute("MATCH path= (a:"+state+")-[:"+expType+"*1]->(b) RETURN collect(distinct labels(b))");
 			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
 			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
+
+
 			results = ((ExecutionResult) execResult).next();
 			dag=results.entrySet().iterator().next();
 
@@ -96,8 +93,13 @@ public class Neo4JJavaDbOperation {
 			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally{
+			db.shutdown();
 		}
-		return dag.getValue().toString();
+		if(dag.getValue().toString().equals("[]")){
+			return null;
+		}
+		return dag.getValue().toString().substring(2,dag.getValue().toString().length()-2);
 	}
 
 	public static void main(String[] args) {
@@ -106,13 +108,16 @@ public class Neo4JJavaDbOperation {
 		SchedulingRequest schedulingRequest = null;
 
 		try {
-			String results = neo4JJavaDbOperation.getDag(TaskRelationships.BIOLOGY.toString());
+			String results = neo4JJavaDbOperation.getDag(ExpTypes.BIOLOGY.toString());
 
 			schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(results));
+			if(results == null){
+				return;
+			}
 			State state = new State();
 			state.setID(1);
-			state.setState(Tasks.ENV_SETUP.toString());
-			state.setExpType(TaskRelationships.BIOLOGY.toString());
+			state.setState(results);
+			state.setExpType(ExpTypes.BIOLOGY.toString());
 			orchestratorMessagePublisher.publishSchedulingRequest(state, schedulingRequest);
 
 		} catch (Exception e) {

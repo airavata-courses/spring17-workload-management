@@ -12,9 +12,6 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
-import org.apache.airavata.sga.graphdb.utils.Tasks;
-import org.apache.airavata.sga.graphdb.utils.TaskRelationships;
-
 public class DagCreation {
 
 
@@ -39,10 +36,10 @@ public class DagCreation {
 
 			db.execute("MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r");
 
-			Node taskA = db.createNode(Tasks.ENV_SETUP);
-			Node taskB = db.createNode(Tasks.DATA_STAGING);
-			Node taskC = db.createNode(Tasks.JOB_SUBMISSION);
-			Node taskD = db.createNode(Tasks.MONITORING);
+			Node taskA = db.createNode(States.ENV_SETUP);
+			Node taskB = db.createNode(States.DATA_STAGING);
+			Node taskC = db.createNode(States.JOB_SUBMISSION);
+			Node taskD = db.createNode(States.MONITORING);
 
 			taskA.setProperty("name","taskA");
 			taskB.setProperty("name", "taskB");
@@ -50,14 +47,14 @@ public class DagCreation {
 			taskD.setProperty("name","taskD");
 		
 
-			taskA.createRelationshipTo(taskB, TaskRelationships.BIOLOGY);
-			taskB.createRelationshipTo(taskC, TaskRelationships.BIOLOGY);
+			taskA.createRelationshipTo(taskB, ExpTypes.BIOLOGY);
+			taskB.createRelationshipTo(taskC, ExpTypes.BIOLOGY);
 			
-			taskA.createRelationshipTo(taskB, TaskRelationships.CHEMISTRY);
-			taskB.createRelationshipTo(taskD, TaskRelationships.CHEMISTRY);
+			taskA.createRelationshipTo(taskB, ExpTypes.CHEMISTRY);
+			taskB.createRelationshipTo(taskD, ExpTypes.CHEMISTRY);
 			
-			taskB.createRelationshipTo(taskC, TaskRelationships.PHYSICS);
-			taskC.createRelationshipTo(taskD, TaskRelationships.PHYSICS);
+			taskB.createRelationshipTo(taskC, ExpTypes.PHYSICS);
+			taskC.createRelationshipTo(taskD, ExpTypes.PHYSICS);
 			
 //			Result execResult = db.execute("MATCH path= (a)-[:BIOLOGY*]-(b) RETURN collect(distinct labels(b))");
 //			Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");

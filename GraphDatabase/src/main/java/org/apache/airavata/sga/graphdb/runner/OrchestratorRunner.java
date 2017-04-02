@@ -1,6 +1,13 @@
 package org.apache.airavata.sga.graphdb.runner;
 
+import org.apache.airavata.sga.commons.model.SchedulingRequest;
+import org.apache.airavata.sga.graphdb.entity.State;
+import org.apache.airavata.sga.graphdb.impl.Neo4JJavaDbOperation;
+import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagingFactory;
+import org.apache.airavata.sga.graphdb.utils.Constants;
+import org.apache.airavata.sga.graphdb.utils.DummySchedulingRequest;
+import org.apache.airavata.sga.graphdb.utils.ExpTypes;
 import org.apache.airavata.sga.messaging.service.core.Subscriber;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -8,7 +15,7 @@ import org.apache.log4j.Logger;
 public class OrchestratorRunner {
 	 /** The Constant logger. */
     private static final Logger logger = LogManager.getLogger(OrchestratorRunner.class);
-
+    private static OrchestratorMessagePublisher orchestratorMessagePublisher = new OrchestratorMessagePublisher();
     private Subscriber subscriber;
 
     private void startOrchestratorRunner() {
@@ -24,6 +31,9 @@ public class OrchestratorRunner {
     }
 
     public static void main(String[] args) {
+        Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
+        SchedulingRequest schedulingRequest = null;
+
         try {
             Runnable runner = new Runnable() {
                 @Override
@@ -36,6 +46,16 @@ public class OrchestratorRunner {
             // start the worker thread
             logger.info("Starting the Orchestrator.");
             new Thread(runner).start();
+
+            String results = neo4JJavaDbOperation.getDag(ExpTypes.BIOLOGY.toString());
+
+            schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(results));
+            State state = new State();
+            state.setID(1);
+            state.setState(results);
+            state.setExpType(ExpTypes.BIOLOGY.toString());
+            orchestratorMessagePublisher.publishSchedulingRequest(state, schedulingRequest);
+
         } catch (Exception ex) {
             logger.error("Something went wrong with the Orchestrator runner. Error: " + ex, ex);
         }

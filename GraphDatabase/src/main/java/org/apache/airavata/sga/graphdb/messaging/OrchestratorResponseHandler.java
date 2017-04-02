@@ -26,6 +26,7 @@ public class OrchestratorResponseHandler implements MessageHandler{
     public void onMessage(MessageContext messageContext) {
         try {
             // get the message
+            logger.info("onMessage() -> New message received. Message Id : " + messageContext.getMessageId());
             TBase<?, ?> event = messageContext.getEvent();
             byte[] bytes = ThriftUtils.serializeThriftObject(event);
 
@@ -37,7 +38,15 @@ public class OrchestratorResponseHandler implements MessageHandler{
             ThriftUtils.createThriftFromBytes(message.getEvent(), response);
             State currentState = DAO.getState(Integer.parseInt(response.getExperimentId()));
             String nextNode = neo4JJavaDbOperation.getNextNode(currentState.getState(),currentState.getExpType());
-            orchestratorMessagePublisher.publishSchedulingRequest(currentState,DummySchedulingRequest.getSchedulingRequest(Constants.fromString(nextNode)));
+
+            if(nextNode == null){
+                return;
+            }
+            State state = new State();
+            state.setID(currentState.getID());
+            state.setState(nextNode);
+            state.setExpType(currentState.getExpType());
+            orchestratorMessagePublisher.publishSchedulingRequest(state,DummySchedulingRequest.getSchedulingRequest(Constants.fromString(nextNode)));
             logger.info("onMessage() -> Received response from scheduler: " + response);
         } catch (Exception ex) {
             logger.error("Error receiving response from task, ex: " + ex, ex);
