@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by Amruta on 3/23/2017.
  */
 public class DummySchedulingRequest {
+    private static boolean isInputTask = true;
     public static TaskContext getEnvironmentSetupTaskContext() {
         // create experiment
         Experiment exp = new Experiment();
@@ -87,7 +88,39 @@ public class DummySchedulingRequest {
         return taskContext;
     }
 
-    public static TaskContext getTaskContextForDataStaging() {
+    public static TaskContext getTaskContextForInputDataStaging() {
+        // create experiment
+        Experiment exp = new Experiment();
+        exp.setExperimentId("experiment-" + ThreadLocalRandom.current().nextInt(5000));
+        exp.setDiskMB(10);
+        exp.setRamMB(128);
+        exp.setNumCPU(0.1);
+
+        // create application
+        Application app = new Application();
+        List<String> commands = new ArrayList<>();
+        commands.add("ping sga-mesos-master -c 4");
+        commands.add("ping sga-mesos-slave -c 4");
+        app.setCommands(commands);
+
+        // create target machine
+        TargetMachine target = new TargetMachine();
+        target.setHostname("sga-mesos-master");
+        target.setPort(8081);
+        target.setLoginId("centos");
+        target.setMachineType(MachineType.CLOUD);
+
+        // create taskcontext
+        TaskContext taskContext = new TaskContext();
+        taskContext.setApplication(app);
+        taskContext.setExperiment(exp);
+        taskContext.setTargetMachine(target);
+        taskContext.setQueueName("queue.datastaging");
+
+        return taskContext;
+    }
+
+    public static TaskContext getTaskContextForOutputDataStaging() {
         // create experiment
         Experiment exp = new Experiment();
         exp.setExperimentId("experiment-" + ThreadLocalRandom.current().nextInt(5000));
@@ -128,9 +161,17 @@ public class DummySchedulingRequest {
         return request;
     }
 
-    public static SchedulingRequest getDataStagingSchedulingRequest() {
+    public static SchedulingRequest getDataStagingInputSchedulingRequest() {
         SchedulingRequest request = new SchedulingRequest();
-        request.setTaskContext(getTaskContextForDataStaging());
+        request.setTaskContext(getTaskContextForInputDataStaging());
+        request.setExperimentPriority(ExperimentPriority.NORMAL);
+        request.setScheduleTime("2017-24-02");
+        return request;
+    }
+
+    public static SchedulingRequest getDataStagingOutputSchedulingRequest() {
+        SchedulingRequest request = new SchedulingRequest();
+        request.setTaskContext(getTaskContextForOutputDataStaging());
         request.setExperimentPriority(ExperimentPriority.NORMAL);
         request.setScheduleTime("2017-24-02");
         return request;
@@ -147,7 +188,15 @@ public class DummySchedulingRequest {
     public static SchedulingRequest getSchedulingRequest(States task){
         switch (task){
             case ENV_SETUP:return getEnvironmentSetupSchedulingRequest();
-            case DATA_STAGING:return getDataStagingSchedulingRequest();
+            case DATA_STAGING:
+                if(isInputTask) {
+                    isInputTask = false;
+                    return getDataStagingInputSchedulingRequest();
+                }
+                else {
+                    isInputTask = true;
+                    return getDataStagingOutputSchedulingRequest();
+                }
             case JOB_SUBMISSION:return getJobSubmissionSchedulingRequest();
             default: return null;
         }

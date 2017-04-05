@@ -49,7 +49,8 @@ public class DagCreation {
 
 			taskA.createRelationshipTo(taskB, ExpTypes.BIOLOGY);
 			taskB.createRelationshipTo(taskC, ExpTypes.BIOLOGY);
-			
+			taskC.createRelationshipTo(taskB, ExpTypes.BIOLOGY);
+
 			taskA.createRelationshipTo(taskB, ExpTypes.CHEMISTRY);
 			taskB.createRelationshipTo(taskD, ExpTypes.CHEMISTRY);
 			
