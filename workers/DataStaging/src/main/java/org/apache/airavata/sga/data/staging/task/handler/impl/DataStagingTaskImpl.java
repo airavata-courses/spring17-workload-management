@@ -1,9 +1,6 @@
 package org.apache.airavata.sga.data.staging.task.handler.impl;
 
-import org.apache.airavata.sga.commons.model.OperationFailedException;
-import org.apache.airavata.sga.commons.model.Response;
-import org.apache.airavata.sga.commons.model.Status;
-import org.apache.airavata.sga.commons.model.TaskContext;
+import org.apache.airavata.sga.commons.model.*;
 import org.apache.airavata.sga.commons.task.CommonTask;
 import org.apache.airavata.sga.data.staging.task.cluster.RemoteCluster;
 import org.apache.airavata.sga.data.staging.task.cluster.impl.RemoteClusterImpl;
@@ -40,9 +37,24 @@ public class DataStagingTaskImpl implements CommonTask {
 
             ServerInfo targetMachine = new ServerInfo(taskContext.getTargetMachine().getLoginId(), taskContext.getTargetMachine().getHostname(), "", taskContext.getTargetMachine().getPort());
             ServerInfo localMachine = new ServerInfo(taskContext.getLocalStorage().getLoginId(), taskContext.getLocalStorage().getHostname(), "", taskContext.getLocalStorage().getPort());
+            ServerInfo serverFrom;
+            ServerInfo serverTo;
+            String sourceFilePath;
+            String destFilePath;
+            if(taskContext.getDataStagingDirection() == DataStagingDirection.OUTPUT){
+                serverFrom = targetMachine;
+                serverTo = localMachine;
+                sourceFilePath = taskContext.getTargetMachine().getScratchDir();
+                destFilePath = taskContext.getLocalStorage().getScratchDir();
+            }else{
+                serverFrom = localMachine;
+                serverTo = targetMachine;
+                sourceFilePath = taskContext.getLocalStorage().getScratchDir();
+                destFilePath = taskContext.getTargetMachine().getScratchDir();
+            }
 
-            RemoteCluster remoteCluster = new RemoteClusterImpl(localMachine, targetMachine, taskContext.getTargetMachine().getDtProtocol());
-            remoteCluster.thirdPartyTransfer(taskContext.getLocalStorage().getScratchDir(), taskContext.getTargetMachine().getScratchDir(), true);
+            RemoteCluster remoteCluster = new RemoteClusterImpl(serverFrom, serverTo, taskContext.getTargetMachine().getDtProtocol());
+            remoteCluster.thirdPartyTransfer(sourceFilePath, destFilePath, true);
 
             logger.info("execute() -> File transferred successfully. Experiment Id : " + taskContext.getExperiment().getExperimentId() + ", Source : " + taskContext.getLocalStorage().getScratchDir() + ", Destination : " + taskContext.getTargetMachine().getScratchDir());
             response.setStatus(Status.OK);
