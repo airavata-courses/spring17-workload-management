@@ -18,8 +18,6 @@ import org.apache.airavata.sga.messaging.service.core.MessagingFactory;
 import org.apache.airavata.sga.messaging.service.core.Publisher;
 import org.apache.airavata.sga.messaging.service.core.Subscriber;
 
-import util.MockOrchestratorHandler;
-
 public class SampleTasks {
 	
 	public static TaskContext getTaskContext() {
@@ -119,7 +117,4 @@ public class SampleTasks {
 	        return MessagingFactory.getPublisher(Constants.SCHEDULER_MESSAGE_RABBITMQ_PROPERTIES);
 	    }
 
-	    public static Subscriber getOrchestratorResponseSubscriber(){
-	        return MessagingFactory.getSubscriber(new MockOrchestratorHandler(), Constants.ORCHESTRATOR_RESPONSE_RABBITMQ_PROPERTIES);
-	    }
 }
