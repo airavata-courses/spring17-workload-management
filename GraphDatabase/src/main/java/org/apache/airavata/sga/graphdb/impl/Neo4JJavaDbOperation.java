@@ -1,26 +1,21 @@
 package org.apache.airavata.sga.graphdb.impl;
-import static java.lang.Math.max;
-import static java.lang.System.currentTimeMillis;
+
+import org.apache.airavata.sga.graphdb.dao.EntityDAO;
+import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
+import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
+import org.neo4j.cypher.internal.javacompat.ExecutionResult;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Result;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.io.File;
 import java.sql.Connection;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.airavata.sga.commons.model.SchedulingRequest;
-import org.apache.airavata.sga.graphdb.dao.EntityDAO;
-import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
-import org.apache.airavata.sga.graphdb.entity.State;
-import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
-import org.apache.airavata.sga.graphdb.utils.Constants;
-import org.apache.airavata.sga.graphdb.utils.DummySchedulingRequest;
-import org.apache.airavata.sga.graphdb.utils.ExpTypes;
-import org.apache.airavata.sga.graphdb.utils.States;
-import org.neo4j.cypher.internal.javacompat.ExecutionResult;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Result;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import static java.lang.Math.max;
+import static java.lang.System.currentTimeMillis;
 
 public class Neo4JJavaDbOperation {
 
@@ -38,7 +33,7 @@ public class Neo4JJavaDbOperation {
 
 	public String getDag(String expType){
 		// TODO Auto-generated method stub
-		File f = new File("C:\\Neo4j");
+		File f = new File("graphdb.location");
 		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
 		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
 		Map<String, Object> results = null;
@@ -69,7 +64,7 @@ public class Neo4JJavaDbOperation {
 
 	public String getNextNode(String state, String expType){
 		// TODO Auto-generated method stub
-		File f = new File("C:\\Neo4j");
+		File f = new File("graphdb.location");
 		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
 		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
 		Map<String, Object> results = null;
@@ -102,27 +97,6 @@ public class Neo4JJavaDbOperation {
 		return dag.getValue().toString().substring(2,dag.getValue().toString().length()-2);
 	}
 
-	public static void main(String[] args) {
 
-		Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
-		SchedulingRequest schedulingRequest = null;
-
-		try {
-			String results = neo4JJavaDbOperation.getDag(ExpTypes.BIOLOGY.toString());
-
-			schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(results));
-			if(results == null){
-				return;
-			}
-			State state = new State();
-			state.setID(1);
-			state.setState(results);
-			state.setExpType(ExpTypes.BIOLOGY.toString());
-			orchestratorMessagePublisher.publishSchedulingRequest(state, schedulingRequest);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 }

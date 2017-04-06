@@ -37,19 +37,21 @@ public class DagCreation {
 			db.execute("MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r");
 
 			Node taskA = db.createNode(States.ENV_SETUP);
-			Node taskB = db.createNode(States.DATA_STAGING);
+			Node taskB = db.createNode(States.INPUT_DATA_STAGING);
 			Node taskC = db.createNode(States.JOB_SUBMISSION);
 			Node taskD = db.createNode(States.MONITORING);
+			Node taskE = db.createNode(States.OUTPUT_DATA_STAGING);
 
 			taskA.setProperty("name","taskA");
 			taskB.setProperty("name", "taskB");
 			taskC.setProperty("name", "taskC");
 			taskD.setProperty("name","taskD");
+			taskE.setProperty("name","taskE");
 		
 
 			taskA.createRelationshipTo(taskB, ExpTypes.BIOLOGY);
 			taskB.createRelationshipTo(taskC, ExpTypes.BIOLOGY);
-			taskC.createRelationshipTo(taskB, ExpTypes.BIOLOGY);
+			taskC.createRelationshipTo(taskE, ExpTypes.BIOLOGY);
 
 			taskA.createRelationshipTo(taskB, ExpTypes.CHEMISTRY);
 			taskB.createRelationshipTo(taskD, ExpTypes.CHEMISTRY);

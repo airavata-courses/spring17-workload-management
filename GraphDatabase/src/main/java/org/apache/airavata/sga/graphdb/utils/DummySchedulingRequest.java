@@ -10,8 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by Amruta on 3/23/2017.
  */
 public class DummySchedulingRequest {
-    private static boolean isInputTask = true;
-    public static final String INPUT_FILE = "/home/ubuntu/workdir/input.txt";
+    public static final String INPUT_FILE = "graphdb.location";
 
     public static TaskContext getCommonTaskContext(){
 
@@ -132,15 +131,8 @@ public class DummySchedulingRequest {
     public static SchedulingRequest getSchedulingRequest(States task){
         switch (task){
             case ENV_SETUP:return getEnvironmentSetupSchedulingRequest();
-            case DATA_STAGING:
-                if(isInputTask) {
-                    isInputTask = false;
-                    return getDataStagingInputSchedulingRequest();
-                }
-                else {
-                    isInputTask = true;
-                    return getDataStagingOutputSchedulingRequest();
-                }
+            case INPUT_DATA_STAGING:return getDataStagingInputSchedulingRequest();
+            case OUTPUT_DATA_STAGING:return getDataStagingOutputSchedulingRequest();
             case JOB_SUBMISSION:return getJobSubmissionSchedulingRequest();
             default: return null;
         }
