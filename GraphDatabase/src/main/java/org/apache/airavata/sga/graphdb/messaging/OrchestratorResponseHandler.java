@@ -36,7 +36,7 @@ public class OrchestratorResponseHandler implements MessageHandler{
             // get response from message
             Response response = new Response();
             ThriftUtils.createThriftFromBytes(message.getEvent(), response);
-            State currentState = DAO.getState(Integer.parseInt(response.getExperimentId()));
+            State currentState = DAO.getState(1);
             String nextNode = neo4JJavaDbOperation.getNextNode(currentState.getState(),currentState.getExpType());
 
             if(nextNode == null){

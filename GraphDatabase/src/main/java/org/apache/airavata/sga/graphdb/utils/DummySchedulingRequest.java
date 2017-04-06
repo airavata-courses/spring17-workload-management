@@ -11,10 +11,13 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class DummySchedulingRequest {
     private static boolean isInputTask = true;
-    public static TaskContext getEnvironmentSetupTaskContext() {
-        // create experiment
+    public static final String INPUT_FILE = "/home/ubuntu/workdir/input.txt";
+
+    public static TaskContext getCommonTaskContext(){
+
         Experiment exp = new Experiment();
-        exp.setExperimentId("experiment-" + ThreadLocalRandom.current().nextInt(5000));
+        exp.setExperimentId("experiment-4675");
+        //exp.setExperimentId("experiment-" + ThreadLocalRandom.current().nextInt(5000));
         exp.setDiskMB(10);
         exp.setRamMB(128);
         exp.setNumCPU(0.1);
@@ -23,8 +26,7 @@ public class DummySchedulingRequest {
         // create application
         Application app = new Application();
         List<String> commands = new ArrayList<>();
-        commands.add("ping sga-mesos-master -c 4");
-        commands.add("ping sga-mesos-slave -c 4");
+
         app.setCommands(commands);
 
         Data data = new Data();
@@ -40,115 +42,57 @@ public class DummySchedulingRequest {
 
         // create target machine
         TargetMachine target = new TargetMachine();
-        target.setHostname("iris.ils.indiana.edu");
+        target.setHostname("54.152.106.52");
         target.setPort(22);
-        target.setLoginId("adhamnas");
+        target.setLoginId("centos");
         target.setMachineType(MachineType.CLOUD);
-        target.setScratchDir("/home/adhamnas/www/test4/test/");
+        target.setScratchDir("/home/centos/"+exp.getWorkingDir()+"/"+exp.getExperimentId());
+        commands.add("cat " + INPUT_FILE + " >> " + target.getScratchDir() + "/output.txt");
+        commands.add("echo " + "Job executed " + " >> " + target.getScratchDir() + "/output.txt");
         target.setDtProtocol(DataTransferProtocol.SCP);
+
+        LocalStorage localStorage = new LocalStorage();
+        localStorage.setLoginId("ubuntu");
+        localStorage.setDtProtocol(DataTransferProtocol.SCP);
+        localStorage.setHostname("54.245.78.146");
+        localStorage.setScratchDir("/home/ubuntu/workdir/input.txt");
+        localStorage.setPort(22);
         // create taskcontext
         TaskContext taskContext = new TaskContext();
         taskContext.setApplication(app);
         taskContext.setExperiment(exp);
         taskContext.setTargetMachine(target);
+        taskContext.setLocalStorage(localStorage);
+
+        return taskContext;
+    }
+
+    public static TaskContext getEnvironmentSetupTaskContext() {
+
+        TaskContext taskContext = getCommonTaskContext();
         taskContext.setQueueName("queue.environmentsetup");
 
         return taskContext;
     }
 
     public static TaskContext getTaskContextForJobSubmission() {
-        // create experiment
-        Experiment exp = new Experiment();
-        exp.setExperimentId("experiment-" + ThreadLocalRandom.current().nextInt(5000));
-        exp.setDiskMB(10);
-        exp.setRamMB(128);
-        exp.setNumCPU(0.1);
-
-        // create application
-        Application app = new Application();
-        List<String> commands = new ArrayList<>();
-        commands.add("ping sga-mesos-master -c 4");
-        commands.add("ping sga-mesos-slave -c 4");
-        app.setCommands(commands);
-
-        // create target machine
-        TargetMachine target = new TargetMachine();
-        target.setHostname("sga-mesos-master");
-        target.setPort(8081);
-        target.setLoginId("centos");
-        target.setMachineType(MachineType.CLOUD);
-
-        // create taskcontext
-        TaskContext taskContext = new TaskContext();
-        taskContext.setApplication(app);
-        taskContext.setExperiment(exp);
-        taskContext.setTargetMachine(target);
+        TaskContext taskContext = getCommonTaskContext();
         taskContext.setQueueName("queue.jobsubmission");
 
         return taskContext;
     }
 
     public static TaskContext getTaskContextForInputDataStaging() {
-        // create experiment
-        Experiment exp = new Experiment();
-        exp.setExperimentId("experiment-" + ThreadLocalRandom.current().nextInt(5000));
-        exp.setDiskMB(10);
-        exp.setRamMB(128);
-        exp.setNumCPU(0.1);
-
-        // create application
-        Application app = new Application();
-        List<String> commands = new ArrayList<>();
-        commands.add("ping sga-mesos-master -c 4");
-        commands.add("ping sga-mesos-slave -c 4");
-        app.setCommands(commands);
-
-        // create target machine
-        TargetMachine target = new TargetMachine();
-        target.setHostname("sga-mesos-master");
-        target.setPort(8081);
-        target.setLoginId("centos");
-        target.setMachineType(MachineType.CLOUD);
-
         // create taskcontext
-        TaskContext taskContext = new TaskContext();
-        taskContext.setApplication(app);
-        taskContext.setExperiment(exp);
-        taskContext.setTargetMachine(target);
+        TaskContext taskContext = getCommonTaskContext();
         taskContext.setQueueName("queue.datastaging");
 
         return taskContext;
     }
 
     public static TaskContext getTaskContextForOutputDataStaging() {
-        // create experiment
-        Experiment exp = new Experiment();
-        exp.setExperimentId("experiment-" + ThreadLocalRandom.current().nextInt(5000));
-        exp.setDiskMB(10);
-        exp.setRamMB(128);
-        exp.setNumCPU(0.1);
-
-        // create application
-        Application app = new Application();
-        List<String> commands = new ArrayList<>();
-        commands.add("ping sga-mesos-master -c 4");
-        commands.add("ping sga-mesos-slave -c 4");
-        app.setCommands(commands);
-
-        // create target machine
-        TargetMachine target = new TargetMachine();
-        target.setHostname("sga-mesos-master");
-        target.setPort(8081);
-        target.setLoginId("centos");
-        target.setMachineType(MachineType.CLOUD);
-
-        // create taskcontext
-        TaskContext taskContext = new TaskContext();
-        taskContext.setApplication(app);
-        taskContext.setExperiment(exp);
-        taskContext.setTargetMachine(target);
+        TaskContext taskContext = getCommonTaskContext();
         taskContext.setQueueName("queue.datastaging");
-
         return taskContext;
     }
 
