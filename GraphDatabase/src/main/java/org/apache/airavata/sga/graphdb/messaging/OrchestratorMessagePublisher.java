@@ -40,20 +40,7 @@ public class OrchestratorMessagePublisher {
             MessageContext messageContext = new MessageContext(schedulingRequest,
                     schedulingRequest.getTaskContext().getExperiment().getExperimentId());
             OrchestratorMessagingFactory.getOrchestratorMessagePublisher().publish(messageContext);
-
-            Response response = new Response();
-            response.setExperimentId("1");
-
-            response.setStatus(Status.OK);
-            response.setMessage("File staged successfully.");
-            logger.info("publishSchedulingRequest() -> Sending response back to orchestrator. Response : " + response.toString()+ ", Experiment Id : " +  response.getExperimentId());
-
-            MessageContext responseMsg = new MessageContext(response, response.getExperimentId());
-            OrchestratorMessagePublisher.getOrchestratorResponsePublisher().publish(responseMsg);
-
-            logger.info("publishSchedulingRequest() -> Response sent. Response : " + response.toString());
-
-        }catch (Exception e) {
+         }catch (Exception e) {
             e.printStackTrace();
         }
 
