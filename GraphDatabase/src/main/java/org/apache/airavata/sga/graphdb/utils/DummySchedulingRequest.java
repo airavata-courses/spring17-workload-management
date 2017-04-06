@@ -85,16 +85,16 @@ public class DummySchedulingRequest {
         // create taskcontext
         TaskContext taskContext = getCommonTaskContext();
         taskContext.setQueueName("queue.datastaging");
-
+        taskContext.setDataStagingDirection(DataStagingDirection.INPUT);
         return taskContext;
     }
 
     public static TaskContext getTaskContextForOutputDataStaging() {
         TaskContext taskContext = getCommonTaskContext();
         taskContext.setQueueName("queue.datastaging");
+        taskContext.setDataStagingDirection(DataStagingDirection.OUTPUT);
         return taskContext;
     }
-
 
     public static SchedulingRequest getJobSubmissionSchedulingRequest() {
         SchedulingRequest request = new SchedulingRequest();
