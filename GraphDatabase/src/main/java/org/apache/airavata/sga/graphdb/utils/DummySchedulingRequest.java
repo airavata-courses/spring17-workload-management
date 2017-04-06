@@ -38,7 +38,6 @@ public class DummySchedulingRequest {
         app.setInputs(inputs);
         app.setOutputs(inputs);
 
-
         // create target machine
         TargetMachine target = new TargetMachine();
         target.setHostname("54.152.106.52");
@@ -92,6 +91,8 @@ public class DummySchedulingRequest {
     public static TaskContext getTaskContextForOutputDataStaging() {
         TaskContext taskContext = getCommonTaskContext();
         taskContext.setQueueName("queue.datastaging");
+        taskContext.getTargetMachine().setScratchDir(taskContext.getTargetMachine().getScratchDir() + "/output.txt");
+        taskContext.getLocalStorage().setScratchDir("/home/ubuntu/workdir/" + taskContext.getExperiment().getExperimentId());
         taskContext.setDataStagingDirection(DataStagingDirection.OUTPUT);
         return taskContext;
     }
