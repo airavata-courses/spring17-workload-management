@@ -28,7 +28,7 @@ public class DagCreation {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		File f = new File("C:\\Neo4j");
+		File f = new File(Constants.GRAPH_DB_LOCATION);
 		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
 		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
 
