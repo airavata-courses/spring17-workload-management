@@ -3,6 +3,7 @@ package org.apache.airavata.sga.graphdb.impl;
 import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
+import org.apache.airavata.sga.graphdb.utils.Constants;
 import org.neo4j.cypher.internal.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Result;
@@ -33,7 +34,7 @@ public class Neo4JJavaDbOperation {
 
 	public String getDag(String expType){
 		// TODO Auto-generated method stub
-		File f = new File("graphdb.location");
+		File f = new File(Constants.GRAPH_DB_LOCATION);
 		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
 		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
 		Map<String, Object> results = null;
@@ -64,7 +65,7 @@ public class Neo4JJavaDbOperation {
 
 	public String getNextNode(String state, String expType){
 		// TODO Auto-generated method stub
-		File f = new File("graphdb.location");
+		File f = new File(Constants.GRAPH_DB_LOCATION);
 		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
 		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
 		Map<String, Object> results = null;

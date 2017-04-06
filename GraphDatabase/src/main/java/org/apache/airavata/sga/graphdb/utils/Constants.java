@@ -22,6 +22,9 @@ public class Constants {
 
     public static final RabbitMQProperties SCHEDULER_MESSAGE_RABBITMQ_PROPERTIES;
     public static final RabbitMQProperties ORCHESTRATOR_RESPONSE_RABBITMQ_PROPERTIES;
+    public static final String GRAPH_DB_LOCATION_KEY = "graphdb.location";
+    public static final String GRAPH_DB_LOCATION;
+
     public static final Properties properties;
     
     static{
@@ -31,6 +34,7 @@ public class Constants {
         } catch (IOException ex) {
             logger.error("Error loading properties: " + ex.getMessage(), ex);
         }
+        GRAPH_DB_LOCATION = properties.getProperty(GRAPH_DB_LOCATION_KEY);
         SCHEDULER_MESSAGE_RABBITMQ_PROPERTIES = getSchedulerMessageRabbitMQProperties();
         ORCHESTRATOR_RESPONSE_RABBITMQ_PROPERTIES = getOrchestratorResponseRabbitMQProperties();
     }

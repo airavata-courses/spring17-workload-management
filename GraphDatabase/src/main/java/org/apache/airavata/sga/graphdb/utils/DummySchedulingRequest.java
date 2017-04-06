@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by Amruta on 3/23/2017.
  */
 public class DummySchedulingRequest {
-    public static final String INPUT_FILE = "graphdb.location";
+    public static final String INPUT_FILE = "/home/ubuntu/workdir/input.txt";
 
     public static TaskContext getCommonTaskContext(){
 
