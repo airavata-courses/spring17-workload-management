@@ -77,7 +77,7 @@ public class TestUtils {
     			
     			// create target machine
     			TargetMachine target = new TargetMachine();
-    			target.setHostname("sga-mesos-master");
+    			target.setHostname("54.152.106.52");
     			target.setPort(8081);
     			target.setLoginId("centos");
     			target.setMachineType(MachineType.CLOUD);

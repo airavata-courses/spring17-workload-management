@@ -86,7 +86,7 @@ public class AuroraThriftClient {
 	public static AuroraThriftClient getAuroraThriftClient(String auroraHost, Integer auroraPort) throws Exception {
 		AuroraThriftClient thriftClient;
 		try {
-			if (auroraHost == null || auroraPort == null) {
+			if (auroraHost == null || auroraPort == 0) {
 				return getAuroraThriftClient(Constants.AURORA_SCHEDULER_PROP_FILE);
 			}
 			

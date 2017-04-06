@@ -95,7 +95,7 @@ public class AuroraClientSample {
 	 * @throws Exception the exception
 	 */
 	public static void createJob() throws Exception {
-		JobKeyBean jobKey = new JobKeyBean("devel", "centos", "test_job3");
+		JobKeyBean jobKey = new JobKeyBean("devel", "centos", "test_job4");
 		IdentityBean owner = new IdentityBean("centos");
 		
 		ProcessBean proc1 = new ProcessBean("process_1", "ping -c 4 sga-mesos-slave", false);
@@ -105,7 +105,7 @@ public class AuroraClientSample {
 		processes.add(proc1);
 		processes.add(proc2);
 		
-		ResourceBean resources = new ResourceBean(1, 8, 1);
+		ResourceBean resources = new ResourceBean(0.1, 8, 1);
 		
 		TaskConfigBean taskConfig = new TaskConfigBean("task_hello_world", processes, resources);
 		JobConfigBean jobConfig = new JobConfigBean(jobKey, owner, taskConfig, "example");
@@ -113,7 +113,7 @@ public class AuroraClientSample {
 		String executorConfigJson = AuroraThriftClientUtil.getExecutorConfigJson(jobConfig);
 		System.out.println(executorConfigJson);
 		
-		AuroraThriftClient client = AuroraThriftClient.getAuroraThriftClient(Constants.AURORA_SCHEDULER_PROP_FILE);
+		AuroraThriftClient client = AuroraThriftClient.getAuroraThriftClient("sga-mesos-master", 0);
 		ResponseBean response = client.createJob(jobConfig);
 		System.out.println(response);
 	}
@@ -172,11 +172,11 @@ public class AuroraClientSample {
 			auroraSchedulerClient = AuroraSchedulerClientFactory.createReadOnlySchedulerClient(MessageFormat.format(Constants.AURORA_SCHEDULER_CONNECTION_URL, auroraHost, auroraPort));
 			
 			// get jobs summary
-//			AuroraClientSample.getJobSummary(auroraSchedulerClient);
+			AuroraClientSample.getJobSummary(auroraSchedulerClient);
 			
 			// create sample job
-//			AuroraClientSample.createJob();
-			AuroraClientSample.createGromacsMPI();
+			AuroraClientSample.createJob();
+//			AuroraClientSample.createGromacsMPI();
 			
 //			AuroraThriftClient client = AuroraThriftClient.getAuroraThriftClient(Constants.AURORA_SCHEDULER_PROP_FILE);
 //			ResponseBean response = client.getPendingReasonForJob(new JobKeyBean("devel", "centos", "hello_pending"));

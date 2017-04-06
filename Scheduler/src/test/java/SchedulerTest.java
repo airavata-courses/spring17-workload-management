@@ -22,7 +22,7 @@ public class SchedulerTest {
             publisher.publish(messageContext);
 
             TestUtils.getOrchestratorResponseSubscriber();
-            //System.exit(0);
+            System.exit(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

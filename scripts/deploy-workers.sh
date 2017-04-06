@@ -1,7 +1,10 @@
 #!/bin/bash
 
 echo "** Installing git"
-yum install -y git
+sudo yum install -y git
+
+echo "** Installing mvn"
+sudo yum install -y mvn
 
 echo "** Cloning the workload repository"
 git clone -b develop git@github.com:airavata-courses/spring17-workload-management.git
