@@ -49,7 +49,7 @@ public class JobSubmissionTaskImpl implements CommonTask {
 					jobSubmission = new CloudJobSubmissionTaskImpl();
 					// submit cloud job
 					String status = jobSubmission.submitJob(taskContext.getTargetMachine().getHostname(),
-							taskContext.getTargetMachine().getPort(), taskContext.getExperiment().getExperimentId(),
+							0, taskContext.getExperiment().getExperimentId(),
 							taskContext.getTargetMachine().getLoginId(), AuroraUtils.ENVIRONMENT,
 							taskContext.getExperiment().getNumCPU(), taskContext.getExperiment().getDiskMB(),
 							taskContext.getExperiment().getRamMB(), taskContext.getApplication().getCommands());
