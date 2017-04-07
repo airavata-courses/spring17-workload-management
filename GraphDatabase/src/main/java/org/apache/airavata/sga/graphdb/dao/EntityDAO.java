@@ -13,5 +13,5 @@ public interface EntityDAO {
 
     public int updateState(State State) throws Exception;
 
-    public State getState(Integer StateId) throws Exception;
+    public State getState(String StateId) throws Exception;
 }

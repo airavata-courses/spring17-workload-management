@@ -11,16 +11,17 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class DummySchedulingRequest {
     public static final String INPUT_FILE = "/home/ubuntu/workdir/input.txt";
+    public static String EXP_ID;
 
     public static TaskContext getCommonTaskContext(){
 
         Experiment exp = new Experiment();
-        exp.setExperimentId("experiment-4675");
+        exp.setExperimentId(EXP_ID);
         //exp.setExperimentId("experiment-" + ThreadLocalRandom.current().nextInt(5000));
         exp.setDiskMB(10);
         exp.setRamMB(128);
         exp.setNumCPU(0.1);
-        exp.setWorkingDir("wordir");
+        exp.setWorkingDir("workdir");
 
         // create application
         Application app = new Application();
@@ -40,13 +41,13 @@ public class DummySchedulingRequest {
 
         // create target machine
         TargetMachine target = new TargetMachine();
-        target.setHostname("54.152.106.52");
+        target.setHostname("54.172.180.210");
         target.setPort(22);
         target.setLoginId("centos");
         target.setMachineType(MachineType.CLOUD);
         target.setScratchDir("/home/centos/"+exp.getWorkingDir()+"/"+exp.getExperimentId());
-        commands.add("cat " + INPUT_FILE + " >> " + target.getScratchDir() + "/output.txt");
-        commands.add("echo " + "Job executed " + " >> " + target.getScratchDir() + "/output.txt");
+        commands.add("cat " + target.getScratchDir() + "/input.txt" + " >> " + target.getScratchDir() + "/"+exp.getExperimentId()+"-output.txt");
+        commands.add("echo " + "'Jobexecuted'" + " >> " + target.getScratchDir() + "/"+exp.getExperimentId()+"-output.txt");
         target.setDtProtocol(DataTransferProtocol.SCP);
 
         LocalStorage localStorage = new LocalStorage();
@@ -83,6 +84,7 @@ public class DummySchedulingRequest {
     public static TaskContext getTaskContextForInputDataStaging() {
         // create taskcontext
         TaskContext taskContext = getCommonTaskContext();
+        taskContext.getTargetMachine().setScratchDir(taskContext.getTargetMachine().getScratchDir()+"/");
         taskContext.setQueueName("queue.datastaging");
         taskContext.setDataStagingDirection(DataStagingDirection.INPUT);
         return taskContext;
@@ -91,8 +93,8 @@ public class DummySchedulingRequest {
     public static TaskContext getTaskContextForOutputDataStaging() {
         TaskContext taskContext = getCommonTaskContext();
         taskContext.setQueueName("queue.datastaging");
-        taskContext.getTargetMachine().setScratchDir(taskContext.getTargetMachine().getScratchDir() + "/output.txt");
-        taskContext.getLocalStorage().setScratchDir("/home/ubuntu/workdir/" + taskContext.getExperiment().getExperimentId());
+        taskContext.getTargetMachine().setScratchDir(taskContext.getTargetMachine().getScratchDir() + "/"+taskContext.getExperiment().getExperimentId()+"-output.txt");
+        taskContext.getLocalStorage().setScratchDir("/home/ubuntu/workdir/" +taskContext.getExperiment().getExperimentId()+"-output.txt");
         taskContext.setDataStagingDirection(DataStagingDirection.OUTPUT);
         return taskContext;
     }
@@ -129,7 +131,8 @@ public class DummySchedulingRequest {
         return request;
     }
 
-    public static SchedulingRequest getSchedulingRequest(States task){
+    public static SchedulingRequest getSchedulingRequest(States task, String expId){
+        EXP_ID = expId;
         switch (task){
             case ENV_SETUP:return getEnvironmentSetupSchedulingRequest();
             case INPUT_DATA_STAGING:return getDataStagingInputSchedulingRequest();

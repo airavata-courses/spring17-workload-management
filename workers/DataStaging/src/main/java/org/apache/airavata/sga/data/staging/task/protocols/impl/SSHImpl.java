@@ -549,7 +549,6 @@ public class SSHImpl implements RemoteInteraction {
 			channel.connect();
 
 		} catch (JSchException e) {
-
 			String err = "Unable to retrieve command output. Command - " + command +
 					" on server - " + session.getHost() + ":" + session.getPort() +
 					" connecting user name - "
@@ -558,6 +557,11 @@ public class SSHImpl implements RemoteInteraction {
 			throw new SSHException(err);
 
 		}finally {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 			if( null != channel && channel.isConnected()){
 				channel.disconnect();
 			}

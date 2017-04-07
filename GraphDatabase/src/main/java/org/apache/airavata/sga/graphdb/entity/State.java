@@ -12,7 +12,7 @@ import javax.persistence.Id;
 public class State {
 
     @Id
-    Integer ID;
+    String ID;
 
     @Column
     String expType;
@@ -20,7 +20,7 @@ public class State {
     @Column
     String state;
 
-    public Integer getID() {
+    public String getID() {
         return ID;
     }
 
@@ -32,7 +32,7 @@ public class State {
         return state;
     }
 
-    public void setID(Integer ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 

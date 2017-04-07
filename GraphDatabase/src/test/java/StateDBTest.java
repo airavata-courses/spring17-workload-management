@@ -13,7 +13,7 @@ public class StateDBTest {
 
     public void saveState(){
         State state = new State();
-        state.setID(1);
+        state.setID("exp");
         state.setState(States.ENV_SETUP.toString());
         state.setExpType(ExpTypes.BIOLOGY.toString());
 
@@ -26,7 +26,7 @@ public class StateDBTest {
 
     public void updateState(){
         State state = new State();
-        state.setID(1);
+        state.setID("exp");
         state.setState(States.ENV_SETUP.toString());
         state.setExpType(ExpTypes.CHEMISTRY.toString());
 
@@ -39,7 +39,7 @@ public class StateDBTest {
 
     public void getState(){
         try {
-            System.out.println(DAO.getState(1));
+            System.out.println(DAO.getState("exp"));
         } catch (Exception e) {
             e.printStackTrace();
         }

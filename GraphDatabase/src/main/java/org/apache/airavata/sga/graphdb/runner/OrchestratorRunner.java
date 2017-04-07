@@ -48,10 +48,10 @@ public class OrchestratorRunner {
             new Thread(runner).start();
 
             String results = neo4JJavaDbOperation.getDag(ExpTypes.BIOLOGY.toString());
-
-            schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(results));
+            String expId = "exp-11";
+            schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(results), expId);
             State state = new State();
-            state.setID(1);
+            state.setID(expId);
             state.setState(results);
             state.setExpType(ExpTypes.BIOLOGY.toString());
             orchestratorMessagePublisher.publishSchedulingRequest(state, schedulingRequest);
