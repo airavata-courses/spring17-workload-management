@@ -47,14 +47,17 @@ public class OrchestratorRunner {
             logger.info("Starting the Orchestrator.");
             new Thread(runner).start();
 
+            // Moved below logic to OrchestratorMock in src/test/java
+            /*
             String results = neo4JJavaDbOperation.getDag(ExpTypes.BIOLOGY.toString());
-            String expId = "exp-11";
+            String expId = "exp-12";
             schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(results), expId);
             State state = new State();
             state.setID(expId);
             state.setState(results);
             state.setExpType(ExpTypes.BIOLOGY.toString());
             orchestratorMessagePublisher.publishSchedulingRequest(state, schedulingRequest);
+            */
 
         } catch (Exception ex) {
             logger.error("Something went wrong with the Orchestrator runner. Error: " + ex, ex);

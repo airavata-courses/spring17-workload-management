@@ -7,6 +7,7 @@ import org.apache.airavata.sga.graphdb.entity.State;
 import org.apache.airavata.sga.graphdb.impl.Neo4JJavaDbOperation;
 import org.apache.airavata.sga.graphdb.utils.Constants;
 import org.apache.airavata.sga.graphdb.utils.DummySchedulingRequest;
+import org.apache.airavata.sga.graphdb.utils.States;
 import org.apache.airavata.sga.messaging.service.core.MessageHandler;
 import org.apache.airavata.sga.messaging.service.model.Message;
 import org.apache.airavata.sga.messaging.service.util.MessageContext;
@@ -40,6 +41,11 @@ public class OrchestratorResponseHandler implements MessageHandler{
             String nextNode = neo4JJavaDbOperation.getNextNode(currentState.getState(),currentState.getExpType());
 
             if(nextNode == null){
+                State state = new State();
+                state.setID(currentState.getID());
+                state.setState(States.COMPLETED.toString());
+                state.setExpType(currentState.getExpType());
+                DAO.saveEntity(state);
                 return;
             }
             State state = new State();
