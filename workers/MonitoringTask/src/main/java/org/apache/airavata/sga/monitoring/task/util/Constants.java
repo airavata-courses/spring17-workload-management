@@ -34,7 +34,7 @@ public class Constants {
             logger.error("Error loading properties: " + ex.getMessage(), ex);
         }
 
-        MONITORING_RABBITMQ_PROPERTIES = getJobSubmissionRabbitMQProperties();
+        MONITORING_RABBITMQ_PROPERTIES = getMonitoringRabbitmqProperties();
         SCHEDULER_RABBITMQ_PROPERTIES = getSchedulerRabbitMQProperties();
     }
 
@@ -43,7 +43,7 @@ public class Constants {
      *
      * @return the job submission rabbit MQ properties
      */
-    private static RabbitMQProperties getJobSubmissionRabbitMQProperties() {
+    private static RabbitMQProperties getMonitoringRabbitmqProperties() {
         RabbitMQProperties rabbitMQProperties = getProperties();
         rabbitMQProperties.setRoutingKey(properties.getProperty(MONITORING_ROUTING_KEY));
         rabbitMQProperties.setExchangeName(properties.getProperty(MONITORING_EXCHANGE_NAME));
