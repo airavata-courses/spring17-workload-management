@@ -28,30 +28,6 @@ public class Neo4JJavaDbOperation {
 	private static final EntityDAO DAO = new EntityDAOImpl();
 	private static OrchestratorMessagePublisher orchestratorMessagePublisher = new OrchestratorMessagePublisher();
 
-	private static byte[] randomBigByteArray() {
-		byte[] array = new byte[max(248, RANDOM.nextInt(248 * 1024))];
-		for (int i = 0; i < array.length; i++)
-			array[i] = (byte) (currentTimeMillis() % 255);
-		return array;
-	}
-
-	public void setNodeProperty(String node){
-		// TODO Auto-generated method stub
-		File f = new File(Constants.GRAPH_DB_LOCATION);
-		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
-		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
-
-		try (Transaction tx = db.beginTx()) {
-
-			db.execute("MATCH (n:" +node + ") SET n.flag = 'true'");
-			tx.success();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally{
-			db.shutdown();
-		}
-	}
-
 	public String getIncompleteNode(){
 
 		File f = new File(Constants.GRAPH_DB_LOCATION);
@@ -64,8 +40,6 @@ public class Neo4JJavaDbOperation {
 
 			Result execResult = db.execute("MATCH (n{flag:\"false\"}) \n" +
 					"return labels(n) LIMIT 1");
-			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
-			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
 			results = ((ExecutionResult) execResult).next();
 			dag=results.entrySet().iterator().next();
 
@@ -77,6 +51,7 @@ public class Neo4JJavaDbOperation {
 		}
 		return dag.getValue().toString().substring(1,dag.getValue().toString().length()-1);
 	}
+
 	public SchedulingRequest getSchedulingRequestFromNode(String expType){
 		// TODO Auto-generated method stub
 		File f = new File(Constants.GRAPH_DB_LOCATION);
@@ -90,10 +65,6 @@ public class Neo4JJavaDbOperation {
 		try (Transaction tx = db.beginTx()) {
 
 			Result execResult = db.execute("MATCH path= (a)-[:" + expType +"*]-(b) RETURN collect(distinct (b))[0] AS n");
-			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
-			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
-			//results = ((ExecutionResult) execResult).next();
-
 			ResourceIterator<Node> resultIterator=execResult.columnAs("n");
 			if(resultIterator.hasNext()){
 				resultNode = resultIterator.next();
@@ -125,20 +96,11 @@ public class Neo4JJavaDbOperation {
 		SchedulingRequest schedulingRequest = null;
 		try (Transaction tx = db.beginTx()) {
 
-			Result execResult = db.execute("MATCH path= (a:"+state+")-[:"+expType+"*1]->(b) RETURN collect(distinct labels(b)) AS n");
-			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
-			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
-			//results = ((ExecutionResult) execResult).next();
-
+			Result execResult = db.execute("MATCH path= (a:"+state+")-[:"+expType+"*1]->(b) RETURN collect(distinct (b)) AS n");
 			ResourceIterator<Node> resultIterator=execResult.columnAs("n");
 			if(resultIterator.hasNext()){
 				resultNode = resultIterator.next();
 			}
-//			for (String key : resultNode.getPropertyKeys()) {
-//				System.out.println("Key: " + key + ", Value: " +  resultNode.getProperty(key));
-//				if(key.equals("schedulingRequest"))
-//					schedulingRequest = (SchedulingRequest) SerializationUtils.convertFromBytes((byte[]) resultNode.getProperty(key));
-//			}
 			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -160,8 +122,6 @@ public class Neo4JJavaDbOperation {
 		try (Transaction tx = db.beginTx()) {
 
 			Result execResult = db.execute("MATCH path= (a)-[:" + expType +"*]-(b) RETURN collect(distinct labels(b))[0]");
-			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
-			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
 			results = ((ExecutionResult) execResult).next();
 			dag=results.entrySet().iterator().next();
 			tx.success();
@@ -184,8 +144,6 @@ public class Neo4JJavaDbOperation {
 		try (Transaction tx = db.beginTx()) {
 
 			Result execResult = db.execute("MATCH path= (a)-[:" + expType +"*]-(b) RETURN collect(distinct labels(b))");
-			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
-			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
 			results = ((ExecutionResult) execResult).next();
 			dag=results.entrySet().iterator().next();
 			String[] nodes = dag.getValue().toString().split(", ");
@@ -214,10 +172,6 @@ public class Neo4JJavaDbOperation {
 		try (Transaction tx = db.beginTx()) {
 
 			Result execResult = db.execute("MATCH path= (a:"+state+")-[:"+expType+"*1]->(b) RETURN collect(distinct labels(b))");
-			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
-			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
-
-
 			results = ((ExecutionResult) execResult).next();
 			dag=results.entrySet().iterator().next();
 
@@ -232,7 +186,5 @@ public class Neo4JJavaDbOperation {
 		}
 		return dag.getValue().toString().substring(2,dag.getValue().toString().length()-2);
 	}
-
-
 
 }
