@@ -44,14 +44,11 @@ public class EnvironmentSetupMessageHandler implements MessageHandler {
             Response response = task.execute(taskContext);
             logger.debug("onMessage() -> Environment setup completed. Message Id : " + messageContext.getMessageId() + ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
 
-            logger.info("onMessage() -> Sending response back to scheduler. Response : " + response.toString()+ ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
-
+            logger.info("onMessage() -> Sending response back [EnvSetup -> Scheduler] for expId: " +  taskContext.getExperiment().getExperimentId());
             MessageContext responseMsg = new MessageContext(response, taskContext.getExperiment().getExperimentId());
             SchedulerMessageFactory.getSchedulerPublisher().publish(responseMsg);
-            logger.info("onMessage() -> Response sent. Response : " + response.toString());
 
             logger.info("onMessage() -> Sending ack for message. Message Id : " + messageContext.getMessageId() + ", Delivery Tag : " + messageContext.getDeliveryTag());
-
             EnvironmentSetupTaskMessagingFactory.getSubscriber().sendAck(messageContext.getDeliveryTag());
             logger.debug("onMessage() -> Ack sent. Message Id : " + messageContext.getMessageId() + ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
 

@@ -29,7 +29,6 @@ public class JobSubmissionTaskImpl implements CommonTask {
 	@Override
 	public void init() throws OperationFailedException {
 		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)

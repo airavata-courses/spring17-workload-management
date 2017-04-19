@@ -42,7 +42,7 @@ public class JobSubmissionMessageHandler implements MessageHandler {
 					+ ", response: " + response);
 			
 			// publish message back to scheduler
-			logger.info("Sending response back as message, for expId: " + experimentId);
+			logger.info("Sending response [JobSub -> Scheduler], for expId: " + experimentId);
 			Publisher publisher = JobSubmissionTaskPublisher.getSchedulerPublisher();
 			logger.info("publisher: " + publisher);
 			if (publisher != null) {
