@@ -16,6 +16,7 @@ import org.apache.airavata.sga.messaging.service.util.ThriftUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.thrift.TBase;
+import org.neo4j.graphdb.Node;
 
 public class OrchestratorResponseHandler implements MessageHandler{
 	 /** The Constant logger. */
@@ -45,6 +46,8 @@ public class OrchestratorResponseHandler implements MessageHandler{
             if (response.getStatus().equals(Status.FAILED)) {
                 saveState(currentState, Status.FAILED.toString());
             } else {
+                Node currNode = neo4JJavaDbOperation.getDagNode(currentState.getState(),currentState.getExpType());
+                currNode.setProperty("isExecuted","true");
                 String nextNode = neo4JJavaDbOperation.getNextNode(currentState.getState(),currentState.getExpType());
                 if(nextNode == null){
                     saveState(currentState, States.COMPLETED.toString());
