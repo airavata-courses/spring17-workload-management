@@ -1,17 +1,20 @@
 package org.apache.airavata.sga.graphdb.impl;
 
+import org.apache.airavata.sga.commons.model.SchedulingRequest;
 import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
 import org.apache.airavata.sga.graphdb.utils.Constants;
+import org.apache.airavata.sga.graphdb.utils.SerializationUtils;
+import org.neo4j.cypher.internal.ExecutionEngine;
 import org.neo4j.cypher.internal.javacompat.ExecutionResult;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Result;
-import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.io.File;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -32,6 +35,120 @@ public class Neo4JJavaDbOperation {
 		return array;
 	}
 
+	public void setNodeProperty(String node){
+		// TODO Auto-generated method stub
+		File f = new File(Constants.GRAPH_DB_LOCATION);
+		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
+		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
+
+		try (Transaction tx = db.beginTx()) {
+
+			db.execute("MATCH (n:" +node + ") SET n.flag = 'true'");
+			tx.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			db.shutdown();
+		}
+	}
+
+	public String getIncompleteNode(){
+
+		File f = new File(Constants.GRAPH_DB_LOCATION);
+		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
+		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
+		Map<String, Object> results = null;
+		Map.Entry<String,Object> dag = null;
+
+		try (Transaction tx = db.beginTx()) {
+
+			Result execResult = db.execute("MATCH (n{flag:\"false\"}) \n" +
+					"return labels(n) LIMIT 1");
+			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
+			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
+			results = ((ExecutionResult) execResult).next();
+			dag=results.entrySet().iterator().next();
+
+			tx.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			db.shutdown();
+		}
+		return dag.getValue().toString().substring(1,dag.getValue().toString().length()-1);
+	}
+	public SchedulingRequest getSchedulingRequestFromNode(String expType){
+		// TODO Auto-generated method stub
+		File f = new File(Constants.GRAPH_DB_LOCATION);
+		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
+		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
+		//ExecutionEngine execEngine = new ExecutionEngine(db);
+		Map<String, Object> results = null;
+		Map.Entry<String,Object> dag = null;
+		Node resultNode = null;
+		SchedulingRequest schedulingRequest = null;
+		try (Transaction tx = db.beginTx()) {
+
+			Result execResult = db.execute("MATCH path= (a)-[:" + expType +"*]-(b) RETURN collect(distinct (b))[0] AS n");
+			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
+			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
+			//results = ((ExecutionResult) execResult).next();
+
+			ResourceIterator<Node> resultIterator=execResult.columnAs("n");
+			if(resultIterator.hasNext()){
+				resultNode = resultIterator.next();
+			}
+			for (String key : resultNode.getPropertyKeys()) {
+				System.out.println("Key: " + key + ", Value: " +  resultNode.getProperty(key));
+				if(key.equals("schedulingRequest"))
+				schedulingRequest = (SchedulingRequest) SerializationUtils.convertFromBytes((byte[]) resultNode.getProperty(key));
+			}
+			tx.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			db.shutdown();
+		}
+
+		return schedulingRequest;
+	}
+
+	public Node getDagNode(String state, String expType){
+		// TODO Auto-generated method stub
+		File f = new File(Constants.GRAPH_DB_LOCATION);
+		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
+		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
+		//ExecutionEngine execEngine = new ExecutionEngine(db);
+		Map<String, Object> results = null;
+		Map.Entry<String,Object> dag = null;
+		Node resultNode = null;
+		SchedulingRequest schedulingRequest = null;
+		try (Transaction tx = db.beginTx()) {
+
+			Result execResult = db.execute("MATCH path= (a:"+state+")-[:"+expType+"*1]->(b) RETURN collect(distinct labels(b)) AS n");
+			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
+			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
+			//results = ((ExecutionResult) execResult).next();
+
+			ResourceIterator<Node> resultIterator=execResult.columnAs("n");
+			if(resultIterator.hasNext()){
+				resultNode = resultIterator.next();
+			}
+//			for (String key : resultNode.getPropertyKeys()) {
+//				System.out.println("Key: " + key + ", Value: " +  resultNode.getProperty(key));
+//				if(key.equals("schedulingRequest"))
+//					schedulingRequest = (SchedulingRequest) SerializationUtils.convertFromBytes((byte[]) resultNode.getProperty(key));
+//			}
+			tx.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			db.shutdown();
+		}
+
+		return resultNode;
+	}
+
 	public String getDag(String expType){
 		// TODO Auto-generated method stub
 		File f = new File(Constants.GRAPH_DB_LOCATION);
@@ -47,13 +164,6 @@ public class Neo4JJavaDbOperation {
 			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
 			results = ((ExecutionResult) execResult).next();
 			dag=results.entrySet().iterator().next();
-
-			/*
-			 * TODO:
-			 * Crate scheduler message context based on task and publish it to queue
-			 * Identify what data a node can accommodate
-			 * How orchestrator gets the data
-			 */
 			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,6 +171,37 @@ public class Neo4JJavaDbOperation {
 			db.shutdown();
 		}
 		return dag.getValue().toString().substring(1,dag.getValue().toString().length()-1);
+	}
+
+	public List<String> getCompleteDag(String expType){
+		// TODO Auto-generated method stub
+		File f = new File(Constants.GRAPH_DB_LOCATION);
+		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
+		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
+		Map<String, Object> results = null;
+		Map.Entry<String,Object> dag = null;
+		List<String> nodesList = new ArrayList<>();
+		try (Transaction tx = db.beginTx()) {
+
+			Result execResult = db.execute("MATCH path= (a)-[:" + expType +"*]-(b) RETURN collect(distinct labels(b))");
+			//Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
+			//db.execute("MATCH path= (a:ENV_SETUP)-[:BIOLOGY*1]-(b) RETURN collect(distinct labels(b))");
+			results = ((ExecutionResult) execResult).next();
+			dag=results.entrySet().iterator().next();
+			String[] nodes = dag.getValue().toString().split(", ");
+			nodesList.add(nodes[0].substring(2,nodes[0].length()-1));
+			for(int i = 1; i < nodes.length-1; i++){
+				nodesList.add(nodes[i].substring(1,nodes[i].length()-1));
+			}
+			nodesList.add(nodes[nodes.length-1].substring(1,nodes[nodes.length-1].length()-2));
+
+			tx.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			db.shutdown();
+		}
+		return nodesList;
 	}
 
 	public String getNextNode(String state, String expType){
@@ -80,12 +221,6 @@ public class Neo4JJavaDbOperation {
 			results = ((ExecutionResult) execResult).next();
 			dag=results.entrySet().iterator().next();
 
-			/*
-			 * TODO:
-			 * Crate scheduler message context based on task and publish it to queue
-			 * Identify what data a node can accommodate
-			 * How orchestrator gets the data
-			 */
 			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
