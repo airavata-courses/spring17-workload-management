@@ -18,25 +18,46 @@ public class OrchestratorMock {
     private static OrchestratorMessagePublisher orchestratorMessagePublisher = new OrchestratorMessagePublisher();
 
     public static void main(String[] args) {
+
+        // increase count here to control number of JOB-SUBMISSIONS
+        for (int i=0; i<1; i++) {
+            new Thread() {
+                @Override
+                public void run() {
+                    System.out.println("Thread: " + Thread.currentThread().getId() + " | Running Now...");
+                    submitJob(UUID.randomUUID().toString(), getRandomExperimentType());
+                    stop();
+                }
+
+                @Override
+                protected void finalize() throws Throwable {
+                    super.finalize();
+                    System.out.println("[" + Thread.currentThread().getId() + "] Terminating...");
+                }
+            }.start();
+        }
+    }
+
+    private static void submitJob(String experimentId, String experimentType) {
         try {
             Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
             SchedulingRequest schedulingRequest = null;
 
-            String experimentType = getRandomExperimentType();
+            // get scheduling request
+            System.out.println("[" + Thread.currentThread().getId() + "] Getting DAG for ExperimentType: " + experimentType);
             String results = neo4JJavaDbOperation.getDag(experimentType);
-            String expId = UUID.randomUUID().toString();
+            System.out.println("[" + Thread.currentThread().getId() + "] Submitting Orchestrator Request for ExperimentType: " + experimentType + ", experimentId: " + experimentId);
+            schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(results), experimentId);
 
-            // get scheduiling request
-            System.out.println("Submitting Orchestrator Request for ExperimentType: " + experimentType + ", experimentId: " + expId);
-            schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(results), expId);
-
+            // save the state in db
             State state = new State();
-            state.setID(expId);
+            state.setID(experimentId);
             state.setState(results);
             state.setExpType(experimentType);
 
             // submit orchestrator request
             orchestratorMessagePublisher.publishSchedulingRequest(state, schedulingRequest);
+            System.exit(0);
         } catch (Exception ex) {
             logger.error("Error running OrchestratorMock, reason: " + ex, ex);
         }

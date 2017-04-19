@@ -1,6 +1,7 @@
 package org.apache.airavata.sga.graphdb.messaging;
 
 import org.apache.airavata.sga.commons.model.Response;
+import org.apache.airavata.sga.commons.model.Status;
 import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
 import org.apache.airavata.sga.graphdb.entity.State;
@@ -37,25 +38,32 @@ public class OrchestratorResponseHandler implements MessageHandler{
             // get response from message
             Response response = new Response();
             ThriftUtils.createThriftFromBytes(message.getEvent(), response);
-            State currentState = DAO.getState(response.getExperimentId());
-            String nextNode = neo4JJavaDbOperation.getNextNode(currentState.getState(),currentState.getExpType());
-
-            if(nextNode == null){
-                State state = new State();
-                state.setID(currentState.getID());
-                state.setState(States.COMPLETED.toString());
-                state.setExpType(currentState.getExpType());
-                DAO.saveEntity(state);
-                return;
-            }
-            State state = new State();
-            state.setID(currentState.getID());
-            state.setState(nextNode);
-            state.setExpType(currentState.getExpType());
-            orchestratorMessagePublisher.publishSchedulingRequest(state,DummySchedulingRequest.getSchedulingRequest(Constants.fromString(nextNode), response.getExperimentId()));
             logger.info("onMessage() -> Received response from scheduler: " + response);
+
+            State currentState = DAO.getState(response.getExperimentId());
+
+            if (response.getStatus().equals(Status.FAILED)) {
+                saveState(currentState, Status.FAILED.toString());
+            } else {
+                String nextNode = neo4JJavaDbOperation.getNextNode(currentState.getState(),currentState.getExpType());
+                if(nextNode == null){
+                    saveState(currentState, States.COMPLETED.toString());
+                } else {
+                    State state = saveState(currentState, nextNode);
+                    orchestratorMessagePublisher.publishSchedulingRequest(state, DummySchedulingRequest.getSchedulingRequest(Constants.fromString(nextNode), response.getExperimentId()));
+                }
+            }
         } catch (Exception ex) {
             logger.error("Error receiving response from task, ex: " + ex, ex);
         }
+    }
+
+    private State saveState(State currentState, String status) throws Exception {
+        State state = new State();
+        state.setID(currentState.getID());
+        state.setState(status);
+        state.setExpType(currentState.getExpType());
+        DAO.saveEntity(state);
+        return state;
     }
 }

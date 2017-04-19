@@ -51,7 +51,7 @@ public class EnvironmentSetupTaskImpl implements CommonTask {
             logger.error("execute() -> Error while environment setup. Experiment Id : " + taskContext.getExperiment().getExperimentId(), e);
 
             response.setStatus(Status.FAILED);
-            response.setMessage("Failed to setup environment.");
+            response.setMessage("Failed to setup environment. Reason: " + e.getMessage());
 
         }
         return response;

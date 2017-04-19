@@ -8,7 +8,8 @@ public class ServerInfo {
     private String host;
     private String userName;
     private int port;
-    private String privateKey = "/Users/Ajinkya/.ssh/id_rsa";
+    private String privateKey = "/Users/goshenoy/.ssh/id_rsa";
+    private String passphrase = "aq1sw2de3";
 
     public ServerInfo(String userName, String host, String privateKey) {
         this(userName, host, privateKey, DEFAULT_PORT);
@@ -37,4 +38,15 @@ public class ServerInfo {
         return privateKey;
     }
 
+    public String getPassphrase() { return passphrase; }
+
+    @Override
+    public String toString() {
+        return "ServerInfo{" +
+                "host='" + host + '\'' +
+                ", userName='" + userName + '\'' +
+                ", port=" + port +
+                ", privateKey='" + privateKey + '\'' +
+                '}';
+    }
 }

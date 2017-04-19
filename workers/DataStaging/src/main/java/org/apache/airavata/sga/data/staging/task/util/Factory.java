@@ -29,7 +29,8 @@ public class Factory {
 
         JSch jsch = new JSch();
 
-        jsch.addIdentity(serverInfo.getPrivateKey());
+        logger.info("getSSHSession() -> serverInfo: " + serverInfo);
+        jsch.addIdentity(serverInfo.getPrivateKey(), serverInfo.getPassphrase());
         Session session = jsch.getSession(serverInfo.getUserName(), serverInfo.getHost(), serverInfo.getPort());
 
         session.setConfig(config);

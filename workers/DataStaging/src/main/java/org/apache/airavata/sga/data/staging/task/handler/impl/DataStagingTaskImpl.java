@@ -65,7 +65,7 @@ public class DataStagingTaskImpl implements CommonTask {
             logger.error("execute() ->Error staging file. Experiment Id : " + taskContext.getExperiment().getExperimentId(), e);
 
             response.setStatus(Status.FAILED);
-            response.setMessage("Error staging file.");
+            response.setMessage("Error staging file. Reason: " + e.getMessage());
         }
         return response;
     }

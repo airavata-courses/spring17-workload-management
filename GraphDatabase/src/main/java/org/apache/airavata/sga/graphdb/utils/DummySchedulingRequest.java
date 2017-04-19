@@ -48,6 +48,7 @@ public class DummySchedulingRequest {
         target.setScratchDir("/home/centos/"+exp.getWorkingDir()+"/"+exp.getExperimentId());
         commands.add("cat " + target.getScratchDir() + "/input.txt" + " >> " + target.getScratchDir() + "/"+exp.getExperimentId()+"-output.txt");
         commands.add("echo " + "'Jobexecuted'" + " >> " + target.getScratchDir() + "/"+exp.getExperimentId()+"-output.txt");
+        commands.add("ping -c 1000 localhost");
         target.setDtProtocol(DataTransferProtocol.SCP);
 
         LocalStorage localStorage = new LocalStorage();

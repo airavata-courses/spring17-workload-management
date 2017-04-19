@@ -54,10 +54,23 @@ public class DagCreation {
 			taskC.createRelationshipTo(taskE, ExpTypes.BIOLOGY);
 
 			taskA.createRelationshipTo(taskB, ExpTypes.CHEMISTRY);
-			taskB.createRelationshipTo(taskD, ExpTypes.CHEMISTRY);
-			
+			taskB.createRelationshipTo(taskC, ExpTypes.CHEMISTRY);
+			taskC.createRelationshipTo(taskE, ExpTypes.CHEMISTRY);
+
+
+			taskA.createRelationshipTo(taskB, ExpTypes.PHYSICS);
 			taskB.createRelationshipTo(taskC, ExpTypes.PHYSICS);
-			taskC.createRelationshipTo(taskD, ExpTypes.PHYSICS);
+			taskC.createRelationshipTo(taskE, ExpTypes.PHYSICS);
+
+			taskA.createRelationshipTo(taskB, ExpTypes.MATHS);
+			taskB.createRelationshipTo(taskC, ExpTypes.MATHS);
+			taskC.createRelationshipTo(taskE, ExpTypes.MATHS);
+
+//			taskA.createRelationshipTo(taskB, ExpTypes.CHEMISTRY);
+//			taskB.createRelationshipTo(taskD, ExpTypes.CHEMISTRY);
+//
+//			taskB.createRelationshipTo(taskC, ExpTypes.PHYSICS);
+//			taskC.createRelationshipTo(taskD, ExpTypes.PHYSICS);
 			
 //			Result execResult = db.execute("MATCH path= (a)-[:BIOLOGY*]-(b) RETURN collect(distinct labels(b))");
 //			Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");
