@@ -15,6 +15,7 @@
         <module>../WorkloadCommons</module>
         <module>../workers/JobSubmissionTask</module>
         <module>../workers/DataStaging</module>
+        <module>../workers/MonitoringTask</module>
         <module>../Scheduler</module>
         <module>../GraphDatabase</module>
     </modules>
