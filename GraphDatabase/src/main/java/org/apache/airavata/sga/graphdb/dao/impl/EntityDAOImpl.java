@@ -163,8 +163,28 @@ public class EntityDAOImpl implements EntityDAO{
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<TaskStateEntity> getTaskListForExperiment(String experimentId) throws Exception {
-        return null;
+        EntityManagerFactory emf = null;
+        EntityManager em = null;
+        try {
+            // Connection details loaded from persistence.xml to create EntityManagerFactory.
+            emf = Persistence.createEntityManagerFactory("jpa-state");
+            em = emf.createEntityManager();
+            Query query = em.createQuery("SELECT t FROM TaskStateEntity t " +
+                    "WHERE t.experiment.experimentId = '" + experimentId + "'");
+            List<TaskStateEntity> taskStateEntities = query.getResultList();
+            return taskStateEntities;
+        } catch (Exception ex) {
+            logger.error("Error getting TaskStateEntity from database. Error: " + ex.getMessage(), ex);
+            throw ex;
+        } finally {
+            // Closing connection.
+            if (emf != null && em!= null) {
+                emf.close();
+                em.close();
+            }
+        }
     }
 }
