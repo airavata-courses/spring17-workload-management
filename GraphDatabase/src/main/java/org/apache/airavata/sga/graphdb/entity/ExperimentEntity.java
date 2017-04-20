@@ -2,6 +2,7 @@ package org.apache.airavata.sga.graphdb.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.PreUpdate;
 import java.util.Date;
 
 /**
@@ -73,6 +74,11 @@ public class ExperimentEntity {
 
     public void setExperimentLastUpdatedTime(Date experimentLastUpdatedTime) {
         this.experimentLastUpdatedTime = experimentLastUpdatedTime;
+    }
+
+    @PreUpdate
+    public void updatedAt() {
+        this.experimentLastUpdatedTime = new Date();
     }
 
     @Override
