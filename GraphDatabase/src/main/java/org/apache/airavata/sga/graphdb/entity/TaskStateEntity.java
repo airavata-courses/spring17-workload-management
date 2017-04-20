@@ -80,6 +80,11 @@ public class TaskStateEntity {
         this.taskLastUpdatedTime = taskLastUpdatedTime;
     }
 
+    @PreUpdate
+    public void updatedAt() {
+        this.taskLastUpdatedTime = new Date();
+    }
+
     @Override
     public String toString() {
         return "TaskStateEntity{" +
