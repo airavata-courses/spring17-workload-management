@@ -31,7 +31,13 @@ public class Constants {
     public static final String RUNNING_EXP_DIR = "running-exp-dir";
 
     public static final Properties properties;
-    
+
+    public enum ExperimentStatus {
+        RUNNING,
+        COMPLETE,
+        FAILED
+    }
+
     static{
         properties = new Properties();
         try {

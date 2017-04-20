@@ -20,6 +20,9 @@ public class ExperimentEntity {
     String experimentType;
 
     @Column
+    String experimentStatus;
+
+    @Column
     Date experimentStartTime;
 
     @Column
@@ -50,6 +53,14 @@ public class ExperimentEntity {
 
     public void setExperimentType(String experimentType) {
         this.experimentType = experimentType;
+    }
+
+    public String getExperimentStatus() {
+        return experimentStatus;
+    }
+
+    public void setExperimentStatus(String experimentStatus) {
+        this.experimentStatus = experimentStatus;
     }
 
     public Date getExperimentStartTime() {

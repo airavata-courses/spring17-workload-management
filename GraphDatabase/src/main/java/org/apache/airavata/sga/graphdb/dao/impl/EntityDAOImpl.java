@@ -130,11 +130,33 @@ public class EntityDAOImpl implements EntityDAO{
             ExperimentEntity experimentEntity = em.find(ExperimentEntity.class, experimentId);
             return experimentEntity;
         } catch (Exception ex) {
-            logger.error("Error getting customers from database. Error: " + ex.getMessage(), ex);
+            logger.error("Error getting ExperimentEntity from database. Error: " + ex.getMessage(), ex);
             throw ex;
         } finally {
             // Closing connection.
-            if (emf != null &&  em!= null) {
+            if (emf != null && em!= null) {
+                emf.close();
+                em.close();
+            }
+        }
+    }
+
+    @Override
+    public TaskStateEntity getTaskStateEntity(String taskId) throws Exception {
+        EntityManagerFactory emf = null;
+        EntityManager em = null;
+        try {
+            // Connection details loaded from persistence.xml to create EntityManagerFactory.
+            emf = Persistence.createEntityManagerFactory("jpa-state");
+            em = emf.createEntityManager();
+            TaskStateEntity taskStateEntity = em.find(TaskStateEntity.class, taskId);
+            return taskStateEntity;
+        } catch (Exception ex) {
+            logger.error("Error getting TaskStateEntity from database. Error: " + ex.getMessage(), ex);
+            throw ex;
+        } finally {
+            // Closing connection.
+            if (emf != null && em!= null) {
                 emf.close();
                 em.close();
             }
