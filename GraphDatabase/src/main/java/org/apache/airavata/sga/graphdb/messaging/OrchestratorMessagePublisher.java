@@ -36,7 +36,7 @@ public class OrchestratorMessagePublisher {
 
     public void publishSchedulingRequest(State state, SchedulingRequest schedulingRequest){
         try{
-            DAO.saveEntity(state);
+            //DAO.saveEntity(state);
             MessageContext messageContext = new MessageContext(schedulingRequest,
                     schedulingRequest.getTaskContext().getExperiment().getExperimentId());
             OrchestratorMessagingFactory.getOrchestratorMessagePublisher().publish(messageContext);
