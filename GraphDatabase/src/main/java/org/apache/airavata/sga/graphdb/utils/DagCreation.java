@@ -58,6 +58,10 @@ public class DagCreation {
 			ENV_SETUP.createRelationshipTo(INPUT_DATA_STAGING, ExpTypes.CHEMISTRY);
 			INPUT_DATA_STAGING.createRelationshipTo(MONITORING, ExpTypes.CHEMISTRY);
 
+			ENV_SETUP.createRelationshipTo(INPUT_DATA_STAGING, ExpTypes.MATHS);
+			INPUT_DATA_STAGING.createRelationshipTo(MONITORING, ExpTypes.MATHS);
+
+
 			INPUT_DATA_STAGING.createRelationshipTo(JOB_SUBMISSION, ExpTypes.PHYSICS);
 			JOB_SUBMISSION.createRelationshipTo(MONITORING, ExpTypes.PHYSICS);
 
