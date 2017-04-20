@@ -26,7 +26,8 @@ public class OrchestratorMock {
                 @Override
                 public void run() {
                     System.out.println("Thread: " + Thread.currentThread().getId() + " | Running Now...");
-                    submitJob(UUID.randomUUID().toString(), getRandomExperimentType());
+                    recoverJobs();
+                    submitJob("exp" + UUID.randomUUID().toString().replaceAll("-", ""), getRandomExperimentType());
                     stop();
                 }
 
@@ -39,30 +40,47 @@ public class OrchestratorMock {
         }
     }
 
+    private static void recoverJobs(){
+        logger.info("Retrieving incomplete jobs from zookeeper");
+        Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
+        try {
+            List<String> expIds = ZKUtils.getExpZKNodes(ZKUtils.getCuratorClient());
+            logger.info("Retrieved incomplete jobs from zookeeper : " + expIds);
+
+            for(String expId : expIds){
+                logger.info("Recovering exp : " + expIds);
+                SchedulingRequest schedulingRequest = neo4JJavaDbOperation.getSchedulingRequestFromNode(expId);
+                orchestratorMessagePublisher.publishSchedulingRequest(null, schedulingRequest);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error recovering jobs", e);
+        }
+    }
+
     private static void submitJob(String experimentId, String experimentType) {
 
         try {
             Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
             SchedulingRequest schedulingRequest = null;
-            List<String> nodesList = new ArrayList<>();
+            List<String> nodesList = null;
             // get scheduling request
-            experimentId = "exp";
             System.out.println("[" + Thread.currentThread().getId() + "] Getting DAG for ExperimentType: " + experimentType);
 
-            nodesList = neo4JJavaDbOperation.getCompleteDag("BIOLOGY");
+            nodesList = neo4JJavaDbOperation.getCompleteDag(experimentType);
 
             Node[] arrNode = new Node[nodesList.size()];
             File f = new File(Constants.GRAPH_DB_LOCATION);
             GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
             GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
             try (Transaction tx = db.beginTx()){
-               // db.execute("MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r");
-
                 for(int i = 0; i < nodesList.size(); i++){
                     arrNode[i] = db.createNode(Label.label(nodesList.get(i)));
                     schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(nodesList.get(i)), experimentId);
                     byte[] schdReq = SerializationUtils.convertToBytes(schedulingRequest);
                     arrNode[i].setProperty("schedulingRequest",schdReq);
+                    //arrNode[i].setProperty("schedulingRequest",Constants.fromString(nodesList.get(i)).toString());
+                    arrNode[i].setProperty("isExecuted","false");
                 }
                 for(int i = 0; i < arrNode.length-1; i++){
                     arrNode[i].createRelationshipTo(arrNode[i+1],RelationshipType.withName(experimentId));
@@ -74,8 +92,10 @@ public class OrchestratorMock {
                 db.shutdown();
             }
 
+            logger.info("creating zookeeper node for exp : " + experimentId);
+            ZKUtils.createExpZKNode(ZKUtils.getCuratorClient(), experimentId);
+
             System.out.println("[" + Thread.currentThread().getId() + "] Submitting Orchestrator Request for ExperimentType: " + experimentType + ", experimentId: " + experimentId);
-           // String results = neo4JJavaDbOperation.getDag("BIOLOGY");
             schedulingRequest = neo4JJavaDbOperation.getSchedulingRequestFromNode(experimentId);
 //            for (String key : resultNode.getPropertyKeys()) {
 //                System.out.println("Key: " + key + ", Value: " +  resultNode.getProperty(key));
@@ -83,13 +103,13 @@ public class OrchestratorMock {
            // schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(results), experimentId);
 
             // save the state in db
-            State state = new State();
-            state.setID(experimentId);
-            //state.setState(results);
-            state.setExpType(experimentType);
+//            State state = new State();
+//            state.setID(experimentId);
+//            //state.setState(results);
+//            state.setExpType(experimentType);
 
             // submit orchestrator request
-            orchestratorMessagePublisher.publishSchedulingRequest(state, schedulingRequest);
+            orchestratorMessagePublisher.publishSchedulingRequest(null, schedulingRequest);
             System.exit(0);
         } catch (Exception ex) {
             logger.error("Error running OrchestratorMock, reason: " + ex, ex);

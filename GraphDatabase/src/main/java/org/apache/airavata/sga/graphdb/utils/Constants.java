@@ -25,6 +25,11 @@ public class Constants {
     public static final String GRAPH_DB_LOCATION_KEY = "graphdb.location";
     public static final String GRAPH_DB_LOCATION;
 
+    public static final String ZOOKEEPER_SERVER_CONNECTION = "zookeeper.server.connection";
+    public static final String ZOOKEEPER_SERVER;
+
+    public static final String RUNNING_EXP_DIR = "running-exp-dir";
+
     public static final Properties properties;
     
     static{
@@ -34,6 +39,7 @@ public class Constants {
         } catch (IOException ex) {
             logger.error("Error loading properties: " + ex.getMessage(), ex);
         }
+        ZOOKEEPER_SERVER = properties.getProperty(ZOOKEEPER_SERVER_CONNECTION);
         GRAPH_DB_LOCATION = properties.getProperty(GRAPH_DB_LOCATION_KEY);
         SCHEDULER_MESSAGE_RABBITMQ_PROPERTIES = getSchedulerMessageRabbitMQProperties();
         ORCHESTRATOR_RESPONSE_RABBITMQ_PROPERTIES = getOrchestratorResponseRabbitMQProperties();
