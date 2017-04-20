@@ -10,11 +10,16 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import org.apache.airavata.sga.commons.model.Experiment;
+import org.apache.airavata.sga.graphdb.entity.ExperimentEntity;
+import org.apache.airavata.sga.graphdb.entity.TaskStateEntity;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import org.apache.airavata.sga.graphdb.entity.State;
 import org.apache.airavata.sga.graphdb.dao.EntityDAO;
+
+import java.util.List;
 
 public class EntityDAOImpl implements EntityDAO{
 
@@ -112,5 +117,32 @@ public class EntityDAOImpl implements EntityDAO{
         }
 
         return state;
+    }
+
+    @Override
+    public ExperimentEntity getExperimentEntity(String experimentId) throws Exception {
+        EntityManagerFactory emf = null;
+        EntityManager em = null;
+        try {
+            // Connection details loaded from persistence.xml to create EntityManagerFactory.
+            emf = Persistence.createEntityManagerFactory("jpa-state");
+            em = emf.createEntityManager();
+            ExperimentEntity experimentEntity = em.find(ExperimentEntity.class, experimentId);
+            return experimentEntity;
+        } catch (Exception ex) {
+            logger.error("Error getting customers from database. Error: " + ex.getMessage(), ex);
+            throw ex;
+        } finally {
+            // Closing connection.
+            if (emf != null &&  em!= null) {
+                emf.close();
+                em.close();
+            }
+        }
+    }
+
+    @Override
+    public List<TaskStateEntity> getTaskListForExperiment(String experimentId) throws Exception {
+        return null;
     }
 }

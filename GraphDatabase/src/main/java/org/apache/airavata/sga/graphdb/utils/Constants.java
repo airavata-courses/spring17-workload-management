@@ -79,4 +79,13 @@ public class Constants {
         return null;
     }
 
+    public static States getTaskFromQueueName(String queueName) {
+        for (States b : States.values()) {
+            if (b.getQueueName().equalsIgnoreCase(queueName)) {
+                return b;
+            }
+        }
+        return null;
+    }
+
 }

@@ -56,39 +56,15 @@ public class OrchestratorResponseHandler implements MessageHandler{
             }
             else {
                 SchedulingRequest schedulingRequest = neo4JJavaDbOperation.setExecutedAndGetNextNode(response.getExperimentId());
-                //SchedulingRequest schedulingRequest =neo4JJavaDbOperation.getNextNode(response.getExperimentId());
-
                 if (null != schedulingRequest) {
-                    orchestratorMessagePublisher.publishSchedulingRequest(null, schedulingRequest);
+                    orchestratorMessagePublisher.publishSchedulingRequest(schedulingRequest);
                 } else {
                     logger.info("deleting zookeeper node for exp : " + response.getExperimentId());
                     ZKUtils.deleteZKNode(ZKUtils.getCuratorClient(), response.getExperimentId());
                 }
             }
-//            if (response.getStatus().equals(Status.FAILED)) {
-//                saveState(currentState, Status.FAILED.toString());
-//            } else {
-//                Node currNode = neo4JJavaDbOperation.getDagNode(currentState.getState(),currentState.getExpType());
-//                currNode.setProperty("isExecuted","true");
-//                String nextNode = neo4JJavaDbOperation.getNextNode(currentState.getState(),currentState.getExpType());
-//                if(nextNode == null){
-//                    saveState(currentState, States.COMPLETED.toString());
-//                } else {
-//                    State state = saveState(currentState, nextNode);
-//                    orchestratorMessagePublisher.publishSchedulingRequest(state, DummySchedulingRequest.getSchedulingRequest(Constants.fromString(nextNode), response.getExperimentId()));
-//                }
-//            }
         } catch (Exception ex) {
             logger.error("Error receiving response from task, ex: " + ex, ex);
         }
-    }
-
-    private State saveState(State currentState, String status) throws Exception {
-        State state = new State();
-        state.setID(currentState.getID());
-        state.setState(status);
-        state.setExpType(currentState.getExpType());
-        DAO.saveEntity(state);
-        return state;
     }
 }

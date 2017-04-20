@@ -2,7 +2,7 @@ namespace java org.apache.airavata.sga.commons.model
 
 typedef i32 integer
 typedef i64 long
-typedef string timestamp;
+typedef string timestamp
 
 enum DataTransferProtocol {
 	SFTP,

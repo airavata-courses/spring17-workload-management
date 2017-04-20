@@ -5,13 +5,18 @@ import org.apache.airavata.sga.commons.model.SchedulingRequest;
 import org.apache.airavata.sga.commons.model.Status;
 import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
+import org.apache.airavata.sga.graphdb.entity.ExperimentEntity;
 import org.apache.airavata.sga.graphdb.entity.State;
+import org.apache.airavata.sga.graphdb.entity.TaskStateEntity;
 import org.apache.airavata.sga.graphdb.utils.Constants;
 import org.apache.airavata.sga.messaging.service.core.MessagingFactory;
 import org.apache.airavata.sga.messaging.service.core.Publisher;
 import org.apache.airavata.sga.messaging.service.util.MessageContext;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
+import java.util.Date;
+import java.util.UUID;
 
 import static org.apache.airavata.sga.commons.scheduler.RabbitMQConstants.logger;
 
@@ -34,15 +39,33 @@ public class OrchestratorMessagePublisher {
         return orchestratorResponsePublisher;
     }
 
-    public void publishSchedulingRequest(State state, SchedulingRequest schedulingRequest){
+    public void publishSchedulingRequest(SchedulingRequest schedulingRequest){
         try{
-            //DAO.saveEntity(state);
+            // create task record for experiment
+            logTaskStartActivity(schedulingRequest.getTaskContext().getExperiment().getExperimentId(),
+                    schedulingRequest.getTaskContext().getQueueName());
+
+            // send SchedulingRequest message to scheduler
             MessageContext messageContext = new MessageContext(schedulingRequest,
                     schedulingRequest.getTaskContext().getExperiment().getExperimentId());
             OrchestratorMessagingFactory.getOrchestratorMessagePublisher().publish(messageContext);
-         }catch (Exception e) {
-            e.printStackTrace();
+        }catch (Exception ex) {
+            logger.error("Failed to publish [Orchestrator -> Scheduler]. Reason: " + ex.getMessage(), ex);
         }
 
+    }
+
+    private void logTaskStartActivity(String experimentId, String taskQueueName) throws Exception {
+        ExperimentEntity experimentEntity = DAO.getExperimentEntity(experimentId);
+        if (experimentEntity != null) {
+            TaskStateEntity taskStateEntity = new TaskStateEntity();
+            taskStateEntity.setExperiment(experimentEntity);
+            taskStateEntity.setTaskId("TASK-" + UUID.randomUUID().toString());
+            taskStateEntity.setTaskStartTime(new Date());
+            taskStateEntity.setTaskName(Constants.getTaskFromQueueName(taskQueueName).getName());
+            DAO.saveEntity(taskStateEntity);
+        } else {
+            throw new Exception("Cannot find Experiment with ID: " + experimentId);
+        }
     }
 }

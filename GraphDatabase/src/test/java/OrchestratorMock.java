@@ -1,12 +1,14 @@
 import org.apache.airavata.sga.commons.model.SchedulingRequest;
-import org.apache.airavata.sga.graphdb.entity.State;
+import org.apache.airavata.sga.graphdb.dao.EntityDAO;
+import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
+import org.apache.airavata.sga.graphdb.entity.ExperimentEntity;
 import org.apache.airavata.sga.graphdb.impl.Neo4JJavaDbOperation;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
 import org.apache.airavata.sga.graphdb.utils.*;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
@@ -15,8 +17,9 @@ import java.util.*;
  * Created by goshenoy on 4/14/17.
  */
 public class OrchestratorMock {
-    private static final Logger logger = LogManager.getLogger(OrchestratorMock.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrchestratorMock.class);
     private static OrchestratorMessagePublisher orchestratorMessagePublisher = new OrchestratorMessagePublisher();
+    private static final EntityDAO DAO = new EntityDAOImpl();
 
     public static void main(String[] args) {
 
@@ -50,7 +53,7 @@ public class OrchestratorMock {
             for(String expId : expIds){
                 logger.info("Recovering exp : " + expIds);
                 SchedulingRequest schedulingRequest = neo4JJavaDbOperation.getSchedulingRequestFromNode(expId);
-                orchestratorMessagePublisher.publishSchedulingRequest(null, schedulingRequest);
+                orchestratorMessagePublisher.publishSchedulingRequest(schedulingRequest);
             }
 
         } catch (Exception e) {
@@ -95,8 +98,12 @@ public class OrchestratorMock {
             logger.info("creating zookeeper node for exp : " + experimentId);
             ZKUtils.createExpZKNode(ZKUtils.getCuratorClient(), experimentId);
 
-            System.out.println("[" + Thread.currentThread().getId() + "] Submitting Orchestrator Request for ExperimentType: " + experimentType + ", experimentId: " + experimentId);
+            logger.info("[" + Thread.currentThread().getId() + "] Submitting Orchestrator Request for ExperimentType: " + experimentType + ", experimentId: " + experimentId);
             schedulingRequest = neo4JJavaDbOperation.getSchedulingRequestFromNode(experimentId);
+
+            logger.info("Creating record in database for experimentId: {} and type: {}", experimentId, experimentType);
+            createExperimentRecord(experimentId, experimentType);
+
 //            for (String key : resultNode.getPropertyKeys()) {
 //                System.out.println("Key: " + key + ", Value: " +  resultNode.getProperty(key));
 //            }
@@ -109,11 +116,21 @@ public class OrchestratorMock {
 //            state.setExpType(experimentType);
 
             // submit orchestrator request
-            orchestratorMessagePublisher.publishSchedulingRequest(null, schedulingRequest);
+            orchestratorMessagePublisher.publishSchedulingRequest(schedulingRequest);
             System.exit(0);
         } catch (Exception ex) {
             logger.error("Error running OrchestratorMock, reason: " + ex, ex);
         }
+    }
+
+    private static void createExperimentRecord(String experimentId, String experimentType) throws Exception {
+        ExperimentEntity experimentEntity = new ExperimentEntity();
+        experimentEntity.setExperimentId(experimentId);
+        experimentEntity.setExperimentType(experimentType);
+        experimentEntity.setExperimentName("EXP_" + experimentId);
+        experimentEntity.setExperimentStartTime(new Date());
+        DAO.saveEntity(experimentEntity);
+        logger.info("Created new experiment record for ExperimentEntity: {}", experimentEntity);
     }
 
     private static String getRandomExperimentType() {
