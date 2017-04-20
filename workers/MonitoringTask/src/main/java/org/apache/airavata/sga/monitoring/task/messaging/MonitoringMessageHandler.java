@@ -42,6 +42,7 @@ public class MonitoringMessageHandler implements MessageHandler {
             CommonTask task = new MonitoringTaskImpl();
             Response response = task.execute(taskContext);
             logger.info("MonitoringTask Response | expId: " + experimentId
+                    + ", taskId: " + taskContext.getTaskId()
                     + ", response: " + response);
 
             // publish message back to scheduler

@@ -39,6 +39,7 @@ public class JobSubmissionMessageHandler implements MessageHandler {
 			CommonTask task = new JobSubmissionTaskImpl();
 			Response response = task.execute(taskContext);
 			logger.info("Response | expId: " + experimentId
+					+ ", taskId: " + taskContext.getTaskId()
 					+ ", response: " + response);
 			
 			// publish message back to scheduler

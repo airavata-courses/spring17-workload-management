@@ -40,11 +40,15 @@ public class DataStagingMessageHandler implements MessageHandler {
             TaskContext taskContext = new TaskContext();
             ThriftUtils.createThriftFromBytes(message.getEvent(), taskContext);
 
-            logger.info("onMessage() -> Handling data staging task. Message Id : " + messageContext.getMessageId() + ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
+            logger.info("onMessage() -> Handling data staging task. Message Id : " + messageContext.getMessageId()
+                    + ", taskId: " + taskContext.getTaskId()
+                    + ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
 
             CommonTask task = new DataStagingTaskImpl();
             Response response = task.execute(taskContext);
-            logger.debug("onMessage() -> Data staging completed. Message Id : " + messageContext.getMessageId() + ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
+            logger.debug("onMessage() -> Data staging completed. Message Id : " + messageContext.getMessageId()
+                    + ", taskId: " + taskContext.getTaskId()
+                    + ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
 
             logger.info("onMessage() -> Sending response back [DataStaging -> Scheduler] for expId: " +  taskContext.getExperiment().getExperimentId());
             MessageContext responseMsg = new MessageContext(response, taskContext.getExperiment().getExperimentId());

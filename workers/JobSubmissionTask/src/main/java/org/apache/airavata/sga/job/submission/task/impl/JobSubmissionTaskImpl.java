@@ -38,6 +38,7 @@ public class JobSubmissionTaskImpl implements CommonTask {
 	public Response execute(TaskContext taskContext) throws OperationFailedException {
 		Response response = new Response();
 		response.setExperimentId(taskContext.getExperiment().getExperimentId());
+		response.setTaskId(taskContext.getTaskId());
 		
 		try {
 			JobSubmission jobSubmission = null;

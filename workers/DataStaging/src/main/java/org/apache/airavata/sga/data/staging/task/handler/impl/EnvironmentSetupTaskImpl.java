@@ -33,6 +33,7 @@ public class EnvironmentSetupTaskImpl implements CommonTask {
 
         Response response = new Response();
         response.setExperimentId(taskContext.getExperiment().getExperimentId());
+        response.setTaskId(taskContext.getTaskId());
 
         try {
 

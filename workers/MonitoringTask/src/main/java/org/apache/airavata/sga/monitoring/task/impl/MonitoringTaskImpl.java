@@ -27,6 +27,8 @@ public class MonitoringTaskImpl implements CommonTask {
     public Response execute(TaskContext taskContext) throws OperationFailedException {
         Response response = new Response();
         response.setExperimentId(taskContext.getExperiment().getExperimentId());
+        response.setTaskId(taskContext.getTaskId());
+
         try {
             logger.info("[STARTING] monitoring task for experiment: {}", taskContext.getExperiment().getExperimentId());
             Thread thread = new Thread(

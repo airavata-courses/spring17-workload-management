@@ -38,11 +38,15 @@ public class EnvironmentSetupMessageHandler implements MessageHandler {
             TaskContext taskContext = new TaskContext();
             ThriftUtils.createThriftFromBytes(message.getEvent(), taskContext);
 
-            logger.info("onMessage() -> Handling environment setup task. Message Id : " + messageContext.getMessageId() + ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
+            logger.info("onMessage() -> Handling environment setup task. Message Id : " + messageContext.getMessageId()
+                    + ", taskId: " + taskContext.getTaskId()
+                    + ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
 
             CommonTask task = new EnvironmentSetupTaskImpl();
             Response response = task.execute(taskContext);
-            logger.debug("onMessage() -> Environment setup completed. Message Id : " + messageContext.getMessageId() + ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
+            logger.debug("onMessage() -> Environment setup completed. Message Id : " + messageContext.getMessageId()
+                    + ", taskId: " + taskContext.getTaskId()
+                    + ", Experiment Id : " +  taskContext.getExperiment().getExperimentId());
 
             logger.info("onMessage() -> Sending response back [EnvSetup -> Scheduler] for expId: " +  taskContext.getExperiment().getExperimentId());
             MessageContext responseMsg = new MessageContext(response, taskContext.getExperiment().getExperimentId());
