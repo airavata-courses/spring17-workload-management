@@ -64,6 +64,7 @@ public class OrchestratorMock {
     private static void submitJob(String experimentId, String experimentType) {
 
         try {
+            experimentType = "BIOLOGY";
             Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
             SchedulingRequest schedulingRequest = null;
             List<String> nodesList = null;
@@ -81,8 +82,9 @@ public class OrchestratorMock {
                     arrNode[i] = db.createNode(Label.label(nodesList.get(i)));
                     schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(nodesList.get(i)), experimentId);
                     byte[] schdReq = SerializationUtils.convertToBytes(schedulingRequest);
-                    arrNode[i].setProperty("schedulingRequest",schdReq);
-                    //arrNode[i].setProperty("schedulingRequest",Constants.fromString(nodesList.get(i)).toString());
+                    //arrNode[i].setProperty("schedulingRequest",schdReq);
+                    arrNode[i].setProperty("schedulingRequest",Constants.fromString(nodesList.get(i)).toString());
+                    arrNode[i].setProperty("taskType",Constants.fromString(nodesList.get(i)).toString());
                     arrNode[i].setProperty("isExecuted","false");
                 }
                 for(int i = 0; i < arrNode.length-1; i++){
@@ -95,10 +97,10 @@ public class OrchestratorMock {
                 db.shutdown();
             }
 
-            logger.info("creating zookeeper node for exp : " + experimentId);
+            logger.info("creating zookeeper node for experiment : " + experimentId);
             ZKUtils.createExpZKNode(ZKUtils.getCuratorClient(), experimentId);
 
-            logger.info("[" + Thread.currentThread().getId() + "] Submitting Orchestrator Request for ExperimentType: " + experimentType + ", experimentId: " + experimentId);
+            logger.info("Get scheduling request for experiment : " +experimentId );
             schedulingRequest = neo4JJavaDbOperation.getSchedulingRequestFromNode(experimentId);
 
             logger.info("Creating record in database for experimentId: {} and type: {}", experimentId, experimentType);
@@ -116,6 +118,7 @@ public class OrchestratorMock {
 //            state.setExpType(experimentType);
 
             // submit orchestrator request
+            logger.info("[" + Thread.currentThread().getId() + "] Submitting Orchestrator Request for ExperimentType: " + experimentType + ", experimentId: " + experimentId);
             orchestratorMessagePublisher.publishSchedulingRequest(schedulingRequest);
             System.exit(0);
         } catch (Exception ex) {
