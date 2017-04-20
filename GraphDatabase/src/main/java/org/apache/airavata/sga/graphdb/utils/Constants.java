@@ -35,7 +35,12 @@ public class Constants {
     public enum ExperimentStatus {
         RUNNING,
         COMPLETE,
-        FAILED
+        FAILED;
+
+        @Override
+        public String toString() {
+            return name();
+        }
     }
 
     static{
