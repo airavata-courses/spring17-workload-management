@@ -82,17 +82,19 @@ struct Application {
 
 struct TaskContext {
 	1: required Experiment experiment,
-	2: optional TargetMachine targetMachine,
-	3: optional LocalStorage localStorage,
-	4: optional Application application,
-	5: optional DataStagingDirection dataStagingDirection,
-	6: optional string queueName
+	2: required string taskId,
+	3: optional TargetMachine targetMachine,
+	4: optional LocalStorage localStorage,
+	5: optional Application application,
+	6: optional DataStagingDirection dataStagingDirection,
+	7: optional string queueName
 }
 
 struct Response {
 	1: required string experimentId,
-	2: required Status status,
-	3: optional string message
+	2: required string taskId,
+	3: required Status status,
+	4: optional string message
 }
 
 struct SchedulingRequest {
