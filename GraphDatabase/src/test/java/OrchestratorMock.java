@@ -29,7 +29,7 @@ public class OrchestratorMock {
                 @Override
                 public void run() {
                     System.out.println("Thread: " + Thread.currentThread().getId() + " | Running Now...");
-                    recoverJobs();
+                    //recoverJobs();
                     submitJob("exp" + UUID.randomUUID().toString().replaceAll("-", ""), getRandomExperimentType());
                     stop();
                 }
@@ -82,8 +82,7 @@ public class OrchestratorMock {
                     arrNode[i] = db.createNode(Label.label(nodesList.get(i)));
                     schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(nodesList.get(i)), experimentId);
                     byte[] schdReq = SerializationUtils.convertToBytes(schedulingRequest);
-                    //arrNode[i].setProperty("schedulingRequest",schdReq);
-                    arrNode[i].setProperty("schedulingRequest",Constants.fromString(nodesList.get(i)).toString());
+                    arrNode[i].setProperty("schedulingRequest",schdReq);
                     arrNode[i].setProperty("taskType",Constants.fromString(nodesList.get(i)).toString());
                     arrNode[i].setProperty("isExecuted","false");
                 }
