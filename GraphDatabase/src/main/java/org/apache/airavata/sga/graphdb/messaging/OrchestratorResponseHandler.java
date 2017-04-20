@@ -13,14 +13,14 @@ import org.apache.airavata.sga.messaging.service.core.MessageHandler;
 import org.apache.airavata.sga.messaging.service.model.Message;
 import org.apache.airavata.sga.messaging.service.util.MessageContext;
 import org.apache.airavata.sga.messaging.service.util.ThriftUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.thrift.TBase;
 import org.neo4j.graphdb.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OrchestratorResponseHandler implements MessageHandler{
 	 /** The Constant logger. */
-    private static final Logger logger = LogManager.getLogger(OrchestratorResponseHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrchestratorResponseHandler.class);
     private static final EntityDAO DAO = new EntityDAOImpl();
     private Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
     private OrchestratorMessagePublisher orchestratorMessagePublisher = new OrchestratorMessagePublisher();
@@ -45,7 +45,13 @@ public class OrchestratorResponseHandler implements MessageHandler{
 
             if (response.getStatus().equals(Status.FAILED)) {
                 saveState(currentState, Status.FAILED.toString());
-            } else {
+            }
+            else if (response.getStatus().equals(Status.ACCEPTED)) {
+                // task is still executing, just log and continue
+                logger.info("onMessage() -> Experiment: {} is currently performing task: {}. Waiting for this task to complete!",
+                        response.getExperimentId(), currentState);
+            }
+            else {
                 Node currNode = neo4JJavaDbOperation.getDagNode(currentState.getState(),currentState.getExpType());
                 currNode.setProperty("isExecuted","true");
                 String nextNode = neo4JJavaDbOperation.getNextNode(currentState.getState(),currentState.getExpType());
