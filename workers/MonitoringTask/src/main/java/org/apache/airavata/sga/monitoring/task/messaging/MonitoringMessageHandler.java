@@ -45,13 +45,13 @@ public class MonitoringMessageHandler implements MessageHandler {
                     + ", response: " + response);
 
             // publish message back to scheduler
-//            logger.info("Sending response [Monitoring -> Scheduler], for expId: " + experimentId);
-//            Publisher publisher = MonitoringTaskPublisher.getSchedulerPublisher();
-//            logger.info("publisher: " + publisher);
-//            if (publisher != null) {
-//                MessageContext responseMsg = new MessageContext(response, experimentId);
-//                publisher.publish(responseMsg);
-//            }
+            logger.info("Sending response [Monitoring -> Scheduler], for expId: " + experimentId);
+            Publisher publisher = MonitoringTaskPublisher.getSchedulerPublisher();
+            logger.info("publisher: " + publisher);
+            if (publisher != null) {
+                MessageContext responseMsg = new MessageContext(response, experimentId);
+                publisher.publish(responseMsg);
+            }
         } catch (Exception ex) {
             logger.error("Error performing monitoring task, ex: " + ex, ex);
         }

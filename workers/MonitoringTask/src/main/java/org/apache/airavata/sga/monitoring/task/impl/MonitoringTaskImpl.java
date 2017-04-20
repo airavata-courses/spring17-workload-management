@@ -28,26 +28,19 @@ public class MonitoringTaskImpl implements CommonTask {
         Response response = new Response();
         response.setExperimentId(taskContext.getExperiment().getExperimentId());
         try {
-//            Thread thread = new Thread(
-//                    new JobMonitor(
-//                            new JobKeyBean(
-//                                    AuroraUtils.ENVIRONMENT, taskContext.getTargetMachine().getLoginId(), taskContext.getExperiment().getExperimentId()
-//                            ),
-//                            taskContext.getTargetMachine().getHostname(),
-//                            0
-//                    )
-//            );
-//            thread.start();
-            logger.info("[STARTING] monitoring task for experiment {}", taskContext.getExperiment().getExperimentId());
-            new JobMonitor(
-                    new JobKeyBean(
-                            AuroraUtils.ENVIRONMENT, taskContext.getTargetMachine().getLoginId(), taskContext.getExperiment().getExperimentId()
-                    ),
-                    taskContext.getTargetMachine().getHostname(),
-                    0
-            ).runTest();
-            logger.info("[STARTED] monitoring task for experiment {}", taskContext.getExperiment().getExperimentId());
-            response.setStatus(Status.OK);
+            logger.info("[STARTING] monitoring task for experiment: {}", taskContext.getExperiment().getExperimentId());
+            Thread thread = new Thread(
+                    new JobMonitor(
+                            new JobKeyBean(
+                                    AuroraUtils.ENVIRONMENT, taskContext.getTargetMachine().getLoginId(), taskContext.getExperiment().getExperimentId()
+                            ),
+                            taskContext.getTargetMachine().getHostname(),
+                            0
+                    )
+            );
+            thread.start();
+            logger.info("[STARTED] monitoring task for experiment: {}", taskContext.getExperiment().getExperimentId());
+            response.setStatus(Status.ACCEPTED);
         } catch (Exception ex) {
             logger.error("MonitoringTask failed, reason: " + ex.getMessage(), ex);
             response.setStatus(Status.FAILED);
