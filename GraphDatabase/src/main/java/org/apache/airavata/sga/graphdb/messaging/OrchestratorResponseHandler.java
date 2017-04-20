@@ -45,12 +45,12 @@ public class OrchestratorResponseHandler implements MessageHandler{
 
             //State currentState = DAO.getState(response.getExperimentId());
             if (response.getStatus().equals(Status.FAILED)) {
-                logger.error("onMessage() -> Experiment: {} has failed!");
+                logger.error("onMessage() -> ExperimentEntity: {} has failed!");
                 //FIXME: handle FAILED status gracefully
             }
             else if (response.getStatus().equals(Status.ACCEPTED)) {
                 // task is still executing, just log and continue
-                logger.info("onMessage() -> Experiment: {} is currently performing task: {}. Waiting for this task to complete!",
+                logger.info("onMessage() -> ExperimentEntity: {} is currently performing task: {}. Waiting for this task to complete!",
                         response.getExperimentId(), "MONITORING");
                 // FIXME: currently only monitoring sends ACCEPTED
             }
