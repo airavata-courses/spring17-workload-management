@@ -53,17 +53,24 @@ public class DagCreation {
 
 			ENV_SETUP.createRelationshipTo(INPUT_DATA_STAGING, ExpTypes.BIOLOGY);
 			INPUT_DATA_STAGING.createRelationshipTo(JOB_SUBMISSION, ExpTypes.BIOLOGY);
-			JOB_SUBMISSION.createRelationshipTo(OUTPUT_DATA_STAGING, ExpTypes.BIOLOGY);
+			JOB_SUBMISSION.createRelationshipTo(MONITORING, ExpTypes.BIOLOGY);
+			MONITORING.createRelationshipTo(OUTPUT_DATA_STAGING, ExpTypes.BIOLOGY);
 
 			ENV_SETUP.createRelationshipTo(INPUT_DATA_STAGING, ExpTypes.CHEMISTRY);
-			INPUT_DATA_STAGING.createRelationshipTo(MONITORING, ExpTypes.CHEMISTRY);
+			INPUT_DATA_STAGING.createRelationshipTo(JOB_SUBMISSION, ExpTypes.CHEMISTRY);
+			JOB_SUBMISSION.createRelationshipTo(MONITORING, ExpTypes.CHEMISTRY);
+			MONITORING.createRelationshipTo(OUTPUT_DATA_STAGING, ExpTypes.CHEMISTRY);
 
 			ENV_SETUP.createRelationshipTo(INPUT_DATA_STAGING, ExpTypes.MATHS);
-			INPUT_DATA_STAGING.createRelationshipTo(MONITORING, ExpTypes.MATHS);
+			INPUT_DATA_STAGING.createRelationshipTo(JOB_SUBMISSION, ExpTypes.MATHS);
+			JOB_SUBMISSION.createRelationshipTo(MONITORING, ExpTypes.MATHS);
+			MONITORING.createRelationshipTo(OUTPUT_DATA_STAGING, ExpTypes.MATHS);
 
 
+			ENV_SETUP.createRelationshipTo(INPUT_DATA_STAGING, ExpTypes.PHYSICS);
 			INPUT_DATA_STAGING.createRelationshipTo(JOB_SUBMISSION, ExpTypes.PHYSICS);
 			JOB_SUBMISSION.createRelationshipTo(MONITORING, ExpTypes.PHYSICS);
+			MONITORING.createRelationshipTo(OUTPUT_DATA_STAGING, ExpTypes.PHYSICS);
 
 //			Result execResult = db.execute("MATCH path= (a)-[:BIOLOGY*]-(b) RETURN collect(distinct labels(b))");
 //			Result exec = db.execute("MATCH path= (a:DATA_STAGING)-[:BIOLOGY*]->(b) RETURN collect(distinct labels(b))");

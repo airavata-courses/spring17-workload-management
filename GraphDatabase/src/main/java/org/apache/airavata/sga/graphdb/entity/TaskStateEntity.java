@@ -15,7 +15,6 @@ public class TaskStateEntity {
     @Id
     String taskId;
 
-    @Id
     @JoinColumn(name = "experimentId")
     @ManyToOne(targetEntity = ExperimentEntity.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     ExperimentEntity experiment;
