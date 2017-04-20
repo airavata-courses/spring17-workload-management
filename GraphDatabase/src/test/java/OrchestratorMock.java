@@ -128,6 +128,7 @@ public class OrchestratorMock {
         experimentEntity.setExperimentId(experimentId);
         experimentEntity.setExperimentType(experimentType);
         experimentEntity.setExperimentName("EXP_" + experimentId);
+        experimentEntity.setExperimentStatus(Constants.ExperimentStatus.RUNNING.name());
         experimentEntity.setExperimentStartTime(new Date());
         DAO.saveEntity(experimentEntity);
         logger.info("Created new experiment record for ExperimentEntity: {}", experimentEntity);

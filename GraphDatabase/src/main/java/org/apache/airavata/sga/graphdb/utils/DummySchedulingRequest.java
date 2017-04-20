@@ -4,6 +4,7 @@ import org.apache.airavata.sga.commons.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -59,6 +60,7 @@ public class DummySchedulingRequest {
         localStorage.setPort(22);
         // create taskcontext
         TaskContext taskContext = new TaskContext();
+        taskContext.setTaskId("TASK-" + UUID.randomUUID().toString().replaceAll("-", ""));
         taskContext.setApplication(app);
         taskContext.setExperiment(exp);
         taskContext.setTargetMachine(target);

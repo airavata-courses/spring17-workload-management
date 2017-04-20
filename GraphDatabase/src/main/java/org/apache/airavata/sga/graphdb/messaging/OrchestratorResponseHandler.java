@@ -5,6 +5,7 @@ import org.apache.airavata.sga.commons.model.SchedulingRequest;
 import org.apache.airavata.sga.commons.model.Status;
 import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
+import org.apache.airavata.sga.graphdb.entity.ExperimentEntity;
 import org.apache.airavata.sga.graphdb.entity.State;
 import org.apache.airavata.sga.graphdb.impl.Neo4JJavaDbOperation;
 import org.apache.airavata.sga.graphdb.utils.Constants;
@@ -59,12 +60,30 @@ public class OrchestratorResponseHandler implements MessageHandler{
                 if (null != schedulingRequest) {
                     orchestratorMessagePublisher.publishSchedulingRequest(schedulingRequest);
                 } else {
+                    logger.info("Experiment with Id: {} is now COMPLETE!", response.getExperimentId());
                     logger.info("deleting zookeeper node for exp : " + response.getExperimentId());
                     ZKUtils.deleteZKNode(ZKUtils.getCuratorClient(), response.getExperimentId());
                 }
             }
         } catch (Exception ex) {
             logger.error("Error receiving response from task, ex: " + ex, ex);
+        }
+    }
+
+    private void changeExperimentStatus(String experimentId, Constants.ExperimentStatus experimentStatus) throws Exception {
+        ExperimentEntity experimentEntity = DAO.getExperimentEntity(experimentId);
+        if (experimentEntity != null) {
+            switch (experimentStatus) {
+                case FAILED:
+                    break;
+
+                case RUNNING:
+                    break;
+
+                case COMPLETE:
+
+                    break;
+            }
         }
     }
 }

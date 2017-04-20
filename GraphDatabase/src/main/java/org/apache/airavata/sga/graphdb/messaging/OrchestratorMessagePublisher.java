@@ -43,6 +43,7 @@ public class OrchestratorMessagePublisher {
         try{
             // create task record for experiment
             logTaskStartActivity(schedulingRequest.getTaskContext().getExperiment().getExperimentId(),
+                    schedulingRequest.getTaskContext().getTaskId(),
                     schedulingRequest.getTaskContext().getQueueName());
 
             // send SchedulingRequest message to scheduler
@@ -55,12 +56,12 @@ public class OrchestratorMessagePublisher {
 
     }
 
-    private void logTaskStartActivity(String experimentId, String taskQueueName) throws Exception {
+    private void logTaskStartActivity(String experimentId, String taskId, String taskQueueName) throws Exception {
         ExperimentEntity experimentEntity = DAO.getExperimentEntity(experimentId);
         if (experimentEntity != null) {
             TaskStateEntity taskStateEntity = new TaskStateEntity();
             taskStateEntity.setExperiment(experimentEntity);
-            taskStateEntity.setTaskId("TASK-" + UUID.randomUUID().toString());
+            taskStateEntity.setTaskId(taskId);
             taskStateEntity.setTaskStartTime(new Date());
             taskStateEntity.setTaskName(Constants.getTaskFromQueueName(taskQueueName).getName());
             DAO.saveEntity(taskStateEntity);
