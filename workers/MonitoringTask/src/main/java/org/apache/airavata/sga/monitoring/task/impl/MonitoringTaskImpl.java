@@ -36,6 +36,7 @@ public class MonitoringTaskImpl implements CommonTask {
                             new JobKeyBean(
                                     AuroraUtils.ENVIRONMENT, taskContext.getTargetMachine().getLoginId(), taskContext.getExperiment().getExperimentId()
                             ),
+                            taskContext.getTaskId(),
                             taskContext.getTargetMachine().getHostname(),
                             0
                     )

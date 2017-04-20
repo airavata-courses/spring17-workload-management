@@ -27,12 +27,14 @@ public class JobMonitor implements Runnable {
     private JobKeyBean jobKeyBean;
     private String auroraHost;
     private int auroraPort;
+    private String taskId;
 
-    JobMonitor(JobKeyBean jobKeyBean, String auroraHost, int auroraPort) {
+    JobMonitor(JobKeyBean jobKeyBean, String taskId, String auroraHost, int auroraPort) {
         timer = new Timer("Aurora Job Status Poller", true);
         this.jobKeyBean = jobKeyBean;
         this.auroraHost = auroraHost;
         this.auroraPort = auroraPort;
+        this.taskId = taskId;
     }
 
     @Override
@@ -56,7 +58,7 @@ public class JobMonitor implements Runnable {
     private void handleMonitoringComplete(ScheduleStatus scheduleStatus) {
         logger.info("Monitoring for experiment: {} has completed with status: {}. Sending message [Monitoring -> Scheduler]");
         Status status = (scheduleStatus.equals(ScheduleStatus.FINISHED) ? Status.OK : Status.FAILED);
-        Response response = new Response(jobKeyBean.getName(), status);
+        Response response = new Response(jobKeyBean.getName(), taskId, status);
         MessageContext messageContext = new MessageContext(response, jobKeyBean.getName());
         try {
             MonitoringTaskPublisher.getSchedulerPublisher().publish(messageContext);
