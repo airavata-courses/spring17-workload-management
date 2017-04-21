@@ -49,6 +49,7 @@ public class ZKUtils {
                     String connectionSting = Constants.ZOOKEEPER_SERVER;
                     RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 5);
                     curatorClient = CuratorFrameworkFactory.newClient(connectionSting, retryPolicy);
+                    curatorClient.start();
                 }
             }
         }
