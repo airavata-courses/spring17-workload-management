@@ -49,7 +49,7 @@ public class DummySchedulingRequest {
         target.setScratchDir("/home/centos/"+exp.getWorkingDir()+"/"+exp.getExperimentId());
         commands.add("cat " + target.getScratchDir() + "/input.txt" + " >> " + target.getScratchDir() + "/"+exp.getExperimentId()+"-output.txt");
         commands.add("echo " + "'Jobexecuted'" + " >> " + target.getScratchDir() + "/"+exp.getExperimentId()+"-output.txt");
-        commands.add("ping -c 1000 localhost");
+        commands.add("ping -c 50 localhost");
         target.setDtProtocol(DataTransferProtocol.SCP);
 
         LocalStorage localStorage = new LocalStorage();
@@ -80,6 +80,13 @@ public class DummySchedulingRequest {
     public static TaskContext getTaskContextForJobSubmission() {
         TaskContext taskContext = getCommonTaskContext();
         taskContext.setQueueName("queue.jobsubmission");
+
+        return taskContext;
+    }
+
+    public static TaskContext getTaskContextForMonitoring() {
+        TaskContext taskContext = getCommonTaskContext();
+        taskContext.setQueueName("queue.monitoring");
 
         return taskContext;
     }
@@ -134,6 +141,14 @@ public class DummySchedulingRequest {
         return request;
     }
 
+    public static SchedulingRequest getMonitoringSchedulingRequest() {
+        SchedulingRequest request = new SchedulingRequest();
+        request.setTaskContext(getTaskContextForMonitoring());
+        request.setExperimentPriority(ExperimentPriority.NORMAL);
+        request.setScheduleTime("2017-24-02");
+        return request;
+    }
+
     public static SchedulingRequest getSchedulingRequest(States task, String expId){
         EXP_ID = expId;
         switch (task){
@@ -141,6 +156,7 @@ public class DummySchedulingRequest {
             case INPUT_DATA_STAGING:return getDataStagingInputSchedulingRequest();
             case OUTPUT_DATA_STAGING:return getDataStagingOutputSchedulingRequest();
             case JOB_SUBMISSION:return getJobSubmissionSchedulingRequest();
+            case MONITORING: return getMonitoringSchedulingRequest();
             default: return null;
         }
 

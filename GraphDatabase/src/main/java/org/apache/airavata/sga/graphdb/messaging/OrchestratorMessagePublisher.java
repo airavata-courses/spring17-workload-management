@@ -1,5 +1,6 @@
 package org.apache.airavata.sga.graphdb.messaging;
 
+import org.apache.airavata.sga.commons.model.DataStagingDirection;
 import org.apache.airavata.sga.commons.model.SchedulingRequest;
 import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
@@ -44,9 +45,9 @@ public class OrchestratorMessagePublisher {
 
             // create task record for experiment
             logger.info("Logging start of Task activity for TaskId: {}, ExperimentId: {}", taskId, experimentId);
-            logTaskStartActivity(schedulingRequest.getTaskContext().getExperiment().getExperimentId(),
-                    schedulingRequest.getTaskContext().getTaskId(),
-                    schedulingRequest.getTaskContext().getQueueName());
+            logTaskStartActivity(experimentId, taskId,
+                    schedulingRequest.getTaskContext().getQueueName(),
+                    schedulingRequest.getTaskContext().getDataStagingDirection());
 
             // send SchedulingRequest message to scheduler
             MessageContext messageContext = new MessageContext(schedulingRequest, experimentId);
@@ -57,14 +58,14 @@ public class OrchestratorMessagePublisher {
 
     }
 
-    private void logTaskStartActivity(String experimentId, String taskId, String taskQueueName) throws Exception {
+    private void logTaskStartActivity(String experimentId, String taskId, String taskQueueName, DataStagingDirection dataStagingDirection) throws Exception {
         ExperimentEntity experimentEntity = DAO.getExperimentEntity(experimentId);
         if (experimentEntity != null) {
             TaskStateEntity taskStateEntity = new TaskStateEntity();
             taskStateEntity.setExperiment(experimentEntity);
             taskStateEntity.setTaskId(taskId);
             taskStateEntity.setTaskStartTime(new Date());
-            States states = Constants.getTaskFromQueueName(taskQueueName);
+            States states = Constants.getTaskFromQueueName(taskQueueName, dataStagingDirection);
             if (states != null) {
                 taskStateEntity.setTaskName(states.getName());
             } else {

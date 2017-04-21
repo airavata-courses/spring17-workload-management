@@ -44,9 +44,6 @@ public class JobMonitor implements Runnable {
                 logger.info("Monitoring Aurora Job with ID: " + jobKeyBean.getName());
                 AuroraTimer auroraTimer = new AuroraTimer();
                 timer.schedule(auroraTimer, 0);
-                while (auroraTimer.isRunning()) {
-                    // existing monitoring job(s) running; do nothing
-                }
             } else {
                 throw new Exception("JobKeyBean not set, cannot monitor aurora-job!");
             }
@@ -56,7 +53,8 @@ public class JobMonitor implements Runnable {
     }
 
     private void handleMonitoringComplete(ScheduleStatus scheduleStatus) {
-        logger.info("Monitoring for experiment: {} has completed with status: {}. Sending message [Monitoring -> Scheduler]");
+        logger.info("Monitoring for experiment: {} has completed with status '{}'. Sending message [Monitoring -> Scheduler]",
+                jobKeyBean.getName(), scheduleStatus);
         Status status = (scheduleStatus.equals(ScheduleStatus.FINISHED) ? Status.OK : Status.FAILED);
         Response response = new Response(jobKeyBean.getName(), taskId, status);
         MessageContext messageContext = new MessageContext(response, jobKeyBean.getName());
@@ -83,28 +81,34 @@ public class JobMonitor implements Runnable {
         @Override
         public void run() {
             try {
-                JobDetailsResponseBean jobDetailsResponseBean = auroraClient.getJobDetails(jobKeyBean);
-                List<ScheduledTask> tasks = jobDetailsResponseBean.getTasks();
-                switch (tasks.get(0).getStatus()) {
-                    case FINISHED:
-                        isRunning = false;
-                        handleMonitoringComplete(ScheduleStatus.FINISHED);
-                        break;
-                    case FAILED:
-                        isRunning = false;
-                        handleMonitoringComplete(ScheduleStatus.FAILED);
-                        break;
-                    case RUNNING:
-                        logger.info("Job {} is still RUNNING. Continuing to monitor", jobKeyBean.getName());
-                        break;
-                    case PENDING:
-                        PendingJobReasonBean pendingReason = auroraClient.getPendingReasonForJob(jobKeyBean);
-                        logger.info("Job {} is PENDING because of following reasons: " + pendingReason.getReasons());
-                        break;
-                    default:
-                        logger.info("Job {} is in {} state", jobKeyBean.getName(), tasks.get(0).getStatus().name());
-                        isRunning = false;
-                        break;
+                while (isRunning) {
+                    JobDetailsResponseBean jobDetailsResponseBean = auroraClient.getJobDetails(jobKeyBean);
+                    List<ScheduledTask> tasks = jobDetailsResponseBean.getTasks();
+                    switch (tasks.get(0).getStatus()) {
+                        case FINISHED:
+                            isRunning = false;
+                            handleMonitoringComplete(ScheduleStatus.FINISHED);
+                            break;
+                        case FAILED:
+                            isRunning = false;
+                            handleMonitoringComplete(ScheduleStatus.FAILED);
+                            break;
+                        case PENDING:
+                            PendingJobReasonBean pendingReason = auroraClient.getPendingReasonForJob(jobKeyBean);
+                            logger.info("Job {} is PENDING because of following reasons: " + pendingReason.getReasons());
+                            break;
+                        default:
+                            logger.info("Job {} is '{}'. Continuing to monitor.", jobKeyBean.getName(), tasks.get(0).getStatus().name());
+                            break;
+                    }
+
+                    // sleep for 3 secs
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException ex) {
+                        logger.error("Aurora monitoring task interrupted!");
+                    }
+
                 }
             } catch (Exception ex) {
                 logger.error("AuroraTimer Exception: " + ex.getMessage(), ex);
@@ -112,56 +116,4 @@ public class JobMonitor implements Runnable {
             }
         }
     }
-
-//    class TestTimer extends TimerTask {
-//        private boolean isRunning = true;
-//
-//        @Override
-//        public void run() {
-//            for (int i = 0; i < 50000; i++) {
-//                if (i % 1000 == 0) {
-//                    System.out.println(Thread.currentThread().getId() + " | Running... " + i);
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException ex) {
-//                        logger.error(ex.getMessage(), ex);
-//                    }
-//
-//                }
-//            }
-//            System.out.println(Thread.currentThread().getId() + " | Completed TimerTask!, expId: " + jobKeyBean.getName());
-//            isRunning = false;
-//        }
-//
-//        private boolean isRunning() {
-//            return isRunning;
-//        }
-//    }
-//
-//    void runTest() {
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                System.out.println(Thread.currentThread().getId() + " | Starting TIMER!, expId: " + jobKeyBean.getName());
-//                Timer timer = new Timer("test timer", false);
-//                TestTimer testTimer = new TestTimer();
-//                timer.schedule(testTimer, 0);
-//
-////                while (testTimer.isRunning()) {
-////                    // do nothing
-////                }
-//                System.out.println(Thread.currentThread().getId() + " | Finished running the TIMER!, expId: " + jobKeyBean.getName());
-//            }
-//        }.start();
-//    }
-
-//    public static void main(String[] args) throws Exception {
-//        JobMonitor jobMonitor = new JobMonitor(null, null, 0);
-//        System.out.println(Thread.currentThread().getId() + " | Starting thread-1");
-//        jobMonitor.runTest();
-//
-//        System.out.println(Thread.currentThread().getId() + " | Starting thread-2");
-//        jobMonitor.runTest();
-//        System.out.println(Thread.currentThread().getId() + " | Exiting main thread!");
-//    }
 }
