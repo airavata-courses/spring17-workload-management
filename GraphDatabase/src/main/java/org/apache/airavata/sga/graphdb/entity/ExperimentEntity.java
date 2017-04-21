@@ -1,6 +1,7 @@
 package org.apache.airavata.sga.graphdb.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PreUpdate;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.Date;
 /**
  * Created by goshenoy on 4/20/17.
  */
+@Entity
 public class ExperimentEntity {
 
     @Id

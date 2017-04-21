@@ -135,8 +135,8 @@ public class EntityDAOImpl implements EntityDAO{
         } finally {
             // Closing connection.
             if (emf != null && em!= null) {
-                emf.close();
                 em.close();
+                emf.close();
             }
         }
     }
@@ -157,8 +157,8 @@ public class EntityDAOImpl implements EntityDAO{
         } finally {
             // Closing connection.
             if (emf != null && em!= null) {
-                emf.close();
                 em.close();
+                emf.close();
             }
         }
     }
@@ -182,8 +182,8 @@ public class EntityDAOImpl implements EntityDAO{
         } finally {
             // Closing connection.
             if (emf != null && em!= null) {
-                emf.close();
                 em.close();
+                emf.close();
             }
         }
     }
