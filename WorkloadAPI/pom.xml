@@ -15,10 +15,29 @@
 
 	<properties>
 		<slf4j.version>1.7.5</slf4j.version>
+		<neo4j.version>3.1.1</neo4j.version>
 		<jettyVersion>9.2.11.v20150529</jettyVersion>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j</artifactId>
+			<version>${neo4j.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-cypher</artifactId>
+			<version>${neo4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-cypher-compiler-3.2</artifactId>
+			<version>3.2.0-alpha05</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>

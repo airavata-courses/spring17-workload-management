@@ -28,6 +28,7 @@ public class ExperimentResource {
 	
 	@POST
 	@Path("launch")
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response launchExperiment(String experimentType) {
 		ResponseBuilder response = null;

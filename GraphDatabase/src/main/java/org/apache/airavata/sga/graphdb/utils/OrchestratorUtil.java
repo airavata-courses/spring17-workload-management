@@ -76,7 +76,7 @@ public class OrchestratorUtil {
             // return experimentId
             return experimentId;
         } catch (Exception ex) {
-            logger.error("Error running OrchestratorMock, reason: " + ex, ex);
+            logger.error("Error running OrchestratorUtil, reason: " + ex, ex);
             throw ex;
         }
     }
