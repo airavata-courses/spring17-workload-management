@@ -24,6 +24,7 @@
 		<jpa.version>2.4.2</jpa.version>
 		<mysql_version>6.0.5</mysql_version>
 		<curator.version>2.8.0</curator.version>
+		<testng.version>6.9.10</testng.version>
 	</properties>
 	
 	<dependencies>
@@ -95,6 +96,18 @@
 			<groupId>org.apache.airavata.sga</groupId>
 			<artifactId>Messaging</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>4.1.0</version>
+			<classifier>no_aop</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>${testng.version}</version>
 		</dependency>
 	</dependencies>
 
