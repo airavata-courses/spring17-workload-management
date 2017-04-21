@@ -93,6 +93,10 @@ public class OrchestratorUtil {
         return DAO.getTaskListForExperiment(experimentId);
     }
 
+    public static List<ExperimentEntity> getExperimentList() throws Exception {
+        return DAO.getExperimentList();
+    }
+
     private static void createExperimentRecord(String experimentId, String experimentType) throws Exception {
         ExperimentEntity experimentEntity = new ExperimentEntity();
         experimentEntity.setExperimentId(experimentId);

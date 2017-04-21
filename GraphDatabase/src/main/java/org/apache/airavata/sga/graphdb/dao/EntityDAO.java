@@ -23,4 +23,6 @@ public interface EntityDAO {
     public TaskStateEntity getTaskStateEntity(String taskId) throws Exception;
 
     public List<TaskStateEntity> getTaskListForExperiment(String experimentId) throws Exception;
+
+    public List<ExperimentEntity> getExperimentList() throws Exception;
 }

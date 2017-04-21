@@ -21,7 +21,7 @@ import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 
 import java.util.List;
 
-public class EntityDAOImpl implements EntityDAO{
+public class EntityDAOImpl implements EntityDAO {
 
     Logger logger = LogManager.getLogger(EntityDAOImpl.class);
     @Override
@@ -178,6 +178,30 @@ public class EntityDAOImpl implements EntityDAO{
             return taskStateEntities;
         } catch (Exception ex) {
             logger.error("Error getting TaskStateEntity from database. Error: " + ex.getMessage(), ex);
+            throw ex;
+        } finally {
+            // Closing connection.
+            if (emf != null && em!= null) {
+                em.close();
+                emf.close();
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ExperimentEntity> getExperimentList() throws Exception {
+        EntityManagerFactory emf = null;
+        EntityManager em = null;
+        try {
+            // Connection details loaded from persistence.xml to create EntityManagerFactory.
+            emf = Persistence.createEntityManagerFactory("jpa-state");
+            em = emf.createEntityManager();
+            Query query = em.createQuery("SELECT e FROM ExperimentEntity e");
+            List<ExperimentEntity> experimentList = query.getResultList();
+            return experimentList;
+        } catch (Exception ex) {
+            logger.error("Error getting ExperimentEntity from database. Error: " + ex.getMessage(), ex);
             throw ex;
         } finally {
             // Closing connection.
