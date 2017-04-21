@@ -99,7 +99,7 @@ public class ZKUtils {
         CuratorFramework curatorClient = CuratorFrameworkFactory.newClient(connectionString, retryPolicy);
         curatorClient.start();
         try {
-            //ZKUtils.createExpZKNode(curatorClient, "testExpId");
+            ZKUtils.createExpZKNode(curatorClient, "testExpId");
             System.out.println(ZKUtils.getExpZKNodes(curatorClient));
             ZKUtils.deleteZKNode(curatorClient, "testExpId");
         } catch (Exception ex) {
