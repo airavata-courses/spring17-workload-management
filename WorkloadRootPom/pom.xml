@@ -18,5 +18,6 @@
         <module>../workers/MonitoringTask</module>
         <module>../Scheduler</module>
         <module>../GraphDatabase</module>
+        <!--<module>../WorkloadAPI</module>-->
     </modules>
 </project>
