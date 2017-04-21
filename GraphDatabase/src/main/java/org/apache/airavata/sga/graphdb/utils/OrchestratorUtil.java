@@ -1,49 +1,33 @@
+package org.apache.airavata.sga.graphdb.utils;
+
 import org.apache.airavata.sga.commons.model.SchedulingRequest;
 import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 import org.apache.airavata.sga.graphdb.dao.impl.EntityDAOImpl;
 import org.apache.airavata.sga.graphdb.entity.ExperimentEntity;
+import org.apache.airavata.sga.graphdb.entity.TaskStateEntity;
 import org.apache.airavata.sga.graphdb.impl.Neo4JJavaDbOperation;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
-import org.apache.airavata.sga.graphdb.utils.*;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /**
- * Created by goshenoy on 4/14/17.
+ * Created by goshenoy on 4/20/17.
  */
-public class OrchestratorMock {
-    private static final Logger logger = LoggerFactory.getLogger(OrchestratorMock.class);
+public class OrchestratorUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(OrchestratorUtil.class);
     private static OrchestratorMessagePublisher orchestratorMessagePublisher = new OrchestratorMessagePublisher();
     private static final EntityDAO DAO = new EntityDAOImpl();
 
-    public static void main(String[] args) {
-
-        // increase count here to control number of JOB-SUBMISSIONS
-        for (int i=0; i<1; i++) {
-            new Thread() {
-                @Override
-                public void run() {
-                    System.out.println("Thread: " + Thread.currentThread().getId() + " | Running Now...");
-                    //recoverJobs();
-                    submitJob("exp" + UUID.randomUUID().toString().replaceAll("-", ""), getRandomExperimentType());
-                    stop();
-                }
-
-                @Override
-                protected void finalize() throws Throwable {
-                    super.finalize();
-                    System.out.println("[" + Thread.currentThread().getId() + "] Terminating...");
-                }
-            }.start();
-        }
-    }
-
-    private static void submitJob(String experimentId, String experimentType) {
+    public static String submitJob(String experimentType) throws Exception {
+        String experimentId = "exp" + UUID.randomUUID().toString().replaceAll("-", "");
         try {
             Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
             SchedulingRequest schedulingRequest = null;
@@ -67,7 +51,7 @@ public class OrchestratorMock {
                     arrNode[i].setProperty("isExecuted","false");
                 }
                 for(int i = 0; i < arrNode.length-1; i++){
-                    arrNode[i].createRelationshipTo(arrNode[i+1],RelationshipType.withName(experimentId));
+                    arrNode[i].createRelationshipTo(arrNode[i+1], RelationshipType.withName(experimentId));
                 }
                 tx.success();
             } catch (Exception e) {
@@ -88,10 +72,25 @@ public class OrchestratorMock {
             // submit orchestrator request
             logger.info("[" + Thread.currentThread().getId() + "] Submitting Orchestrator Request for ExperimentType: " + experimentType + ", experimentId: " + experimentId);
             orchestratorMessagePublisher.publishSchedulingRequest(schedulingRequest);
-            System.exit(0);
+
+            // return experimentId
+            return experimentId;
         } catch (Exception ex) {
             logger.error("Error running OrchestratorMock, reason: " + ex, ex);
+            throw ex;
         }
+    }
+
+    public static ExperimentEntity getExperiment(String experimentId) throws Exception {
+        return DAO.getExperimentEntity(experimentId);
+    }
+
+    public static TaskStateEntity getTaskStateEntity(String taskId) throws Exception {
+        return DAO.getTaskStateEntity(taskId);
+    }
+
+    public static List<TaskStateEntity> getTasksForExperiment(String experimentId) throws Exception {
+        return DAO.getTaskListForExperiment(experimentId);
     }
 
     private static void createExperimentRecord(String experimentId, String experimentType) throws Exception {
@@ -103,12 +102,5 @@ public class OrchestratorMock {
         experimentEntity.setExperimentStartTime(new Date());
         DAO.saveEntity(experimentEntity);
         logger.info("Created new experiment record for ExperimentEntity: {}", experimentEntity);
-    }
-
-    private static String getRandomExperimentType() {
-        List<ExpTypes> expTypesList = new ArrayList<ExpTypes>(Arrays.asList(ExpTypes.values()));
-        return expTypesList.get(
-                new Random().nextInt(expTypesList.size())
-        ).toString();
     }
 }
