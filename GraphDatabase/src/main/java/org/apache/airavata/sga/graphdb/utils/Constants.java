@@ -3,6 +3,7 @@ package org.apache.airavata.sga.graphdb.utils;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.airavata.sga.commons.model.DataStagingDirection;
 import org.apache.airavata.sga.commons.scheduler.RabbitMQConstants;
 import org.apache.airavata.sga.messaging.service.util.RabbitMQProperties;
 import org.apache.log4j.LogManager;
@@ -90,10 +91,14 @@ public class Constants {
         return null;
     }
 
-    public static States getTaskFromQueueName(String queueName) {
+    public static States getTaskFromQueueName(String queueName, DataStagingDirection dataStagingDirection) {
         for (States b : States.values()) {
             if (b.getQueueName().equalsIgnoreCase(queueName)) {
-                return b;
+                if (b.getDataStagingDirection() == null) {
+                    return b;
+                } else if (b.getDataStagingDirection().equals(dataStagingDirection)){
+                    return b;
+                }
             }
         }
         return null;

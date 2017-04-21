@@ -43,24 +43,6 @@ public class OrchestratorMock {
         }
     }
 
-    private static void recoverJobs(){
-        logger.info("Retrieving incomplete jobs from zookeeper");
-        Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
-        try {
-            List<String> expIds = ZKUtils.getExpZKNodes(ZKUtils.getCuratorClient());
-            logger.info("Retrieved incomplete jobs from zookeeper : " + expIds);
-
-            for(String expId : expIds){
-                logger.info("Recovering exp : " + expIds);
-                SchedulingRequest schedulingRequest = neo4JJavaDbOperation.getSchedulingRequestFromNode(expId);
-                orchestratorMessagePublisher.publishSchedulingRequest(schedulingRequest);
-            }
-
-        } catch (Exception e) {
-            logger.error("Error recovering jobs", e);
-        }
-    }
-
     private static void submitJob(String experimentId, String experimentType) {
 
         try {

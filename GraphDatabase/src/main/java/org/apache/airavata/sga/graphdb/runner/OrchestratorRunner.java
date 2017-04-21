@@ -1,20 +1,20 @@
 package org.apache.airavata.sga.graphdb.runner;
 
 import org.apache.airavata.sga.commons.model.SchedulingRequest;
-import org.apache.airavata.sga.graphdb.entity.State;
 import org.apache.airavata.sga.graphdb.impl.Neo4JJavaDbOperation;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagingFactory;
-import org.apache.airavata.sga.graphdb.utils.Constants;
-import org.apache.airavata.sga.graphdb.utils.DummySchedulingRequest;
-import org.apache.airavata.sga.graphdb.utils.ExpTypes;
+import org.apache.airavata.sga.graphdb.utils.ZKUtils;
 import org.apache.airavata.sga.messaging.service.core.Subscriber;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrchestratorRunner {
 	 /** The Constant logger. */
-    private static final Logger logger = LogManager.getLogger(OrchestratorRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrchestratorRunner.class);
     private static OrchestratorMessagePublisher orchestratorMessagePublisher = new OrchestratorMessagePublisher();
     private Subscriber subscriber;
 
@@ -30,6 +30,25 @@ public class OrchestratorRunner {
         }
     }
 
+    private void recoverJobs() {
+        logger.info("Retrieving incomplete jobs from zookeeper.");
+        Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
+        List<String> expIds = new ArrayList<>();
+        try {
+            ZKUtils.getExpZKNodes(ZKUtils.getCuratorClient());
+            logger.info("Retrieved incomplete jobs from zookeeper: " + expIds);
+        } catch (Exception e) {
+            logger.error("Error recovering jobs. Reason: " + e.getMessage(), e);
+        }
+
+        for(String expId : expIds){
+            logger.info("Resuming job: {} from where it left off.", expId);
+            SchedulingRequest schedulingRequest = neo4JJavaDbOperation.getSchedulingRequestFromNode(expId);
+            orchestratorMessagePublisher.publishSchedulingRequest(schedulingRequest);
+        }
+
+    }
+
     public static void main(String[] args) {
         Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
         SchedulingRequest schedulingRequest = null;
@@ -43,9 +62,21 @@ public class OrchestratorRunner {
                 }
             };
 
+            Runnable recovery = new Runnable() {
+                @Override
+                public void run() {
+                    OrchestratorRunner orchestratorRunner = new OrchestratorRunner();
+                    orchestratorRunner.recoverJobs();
+                }
+            };
+
             // start the worker thread
             logger.info("Starting the Orchestrator.");
             new Thread(runner).start();
+
+            // recover existing jobs
+            logger.info("Recovering lost jobs.");
+            new Thread(recovery).start();
 
             // Moved below logic to OrchestratorMock in src/test/java
             /*
