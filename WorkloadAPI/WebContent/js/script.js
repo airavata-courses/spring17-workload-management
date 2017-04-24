@@ -105,7 +105,9 @@ function renderExperimentTable() {
 
 	// Render html
 	$("#experimentListDiv").html(htmlString);
-	$('#experimentListTable').dataTable();
+	var expTable = $('#experimentListTable').dataTable({
+		"aaSorting" : [ [ 4, "desc" ] ]
+	});
 
 	// get item selected from experimentList
 	$('#experimentListTable tbody').on(
@@ -158,17 +160,17 @@ function getTasksForExperiment(experimentId) {
 }
 
 function renderTaskListForExperiment() {
-	$('#monitoringDiv').show();		// un-hide the div
+	$('#monitoringDiv').show(); // un-hide the div
 	$('#expMonitoring').html(
 			"<h4><span class='label label-info'>Experiment: " + experimentId
-					+ "</span></h4>");	// display exp being monitored
-	
+					+ "</span></h4>"); // display exp being monitored
+
 	var htmlString = "<table id='taskListTable' class='table table-hover'>"
 			+ "<thead>" + "<tr class='active'>"
 			+ "<th data-field='taskName' data-sortable='true'> Task-Name </th>"
 			+ "<th data-field='taskStart' data-sortable='true'> Start </th>"
 			+ "<th data-field='taskEnd' data-sortable='true'> End </th>"
-			+ "</tr>" + "</thead>" + "<tbody>";	// render the table
+			+ "</tr>" + "</thead>" + "<tbody>"; // render the table
 
 	var srNo = 1;
 
@@ -227,7 +229,7 @@ function renderTaskListForExperiment() {
 		// stop existing timer if exp ended
 		clearInterval(refreshId);
 		$('.progress-bar').removeClass('active');
-		
+
 		// progress-bar 100%
 		$('.progress-bar').attr('aria-valuenow', '100');
 		$('.progress-bar').attr('style', 'width: 100%');
