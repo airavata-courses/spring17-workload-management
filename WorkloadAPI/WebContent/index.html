@@ -7,6 +7,8 @@
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" />
 <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -44,12 +46,12 @@
 
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-7">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">Experiment List</h3>
 					</div>
-					<div class="panel-body">
+					<div class="panel-body" id="experimentListDiv">
 						<!-- Existing Experiments Listed Here -->
 					</div>
 				</div>
@@ -144,21 +146,31 @@
 				</div>
 				<!-- /error-modal -->
 			</div>
-			<!-- /col-md-6 -->
+			<!-- /col-md-7 -->
 
-			<div class="col-md-6">
-				<div class="panel panel-default">
+			<div class="col-md-5">
+				<div id="monitoringDiv" class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">Job Monitoring</h3>
 					</div>
 					<div class="panel-body">
-						<!-- selected experiment task-audit-trail displayed here -->
+						<div class="progress">
+							<div class="progress-bar progress-bar-striped active"
+								role="progressbar" aria-valuenow="0" aria-valuemin="0"
+								aria-valuemax="100" style="width: 0%" disabled></div>
+						</div>
+						<div id="taskListDiv">
+							<!-- selected experiment task-audit-trail displayed here -->
+						</div>
+						<div id="expMonitoring" style="text-align: center">
+							<!-- experimentId comes here -->
+						</div>
 					</div>
 					<!-- /panel-body -->
 				</div>
 				<!-- panel-1 -->
 			</div>
-			<!-- /col-md-6 -->
+			<!-- /col-md-5 -->
 		</div>
 		<!-- /row -->
 	</div>
@@ -171,6 +183,10 @@
 	<!-- Bootstrap Javascript -->
 	<script
 		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 	<!-- Custom Javascript -->
 	<script src="js/script.js"></script>
 </body>
