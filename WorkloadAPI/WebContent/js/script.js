@@ -212,11 +212,10 @@ function renderTaskListForExperiment() {
 			'Experiment {0} ('.format(progress == 100 ? 'Complete' : 'Running')
 					+ progress.toString() + '%)');
 
-	if (progress == 100) {
-		$('.progress-bar').removeClass('active');
-	} else {
-		$('.progress-bar').addClass('active');
-	}
+	// remove success/danger colors
+	$('.progress-bar').removeClass('progress-bar-success');
+	$('.progress-bar').removeClass('progress-bar-danger');
+	$('.progress-bar').addClass('active');
 
 	// check if exp ended
 	if (expStatus != 'COMPLETE' && expStatus != 'FAILED') {
@@ -226,7 +225,18 @@ function renderTaskListForExperiment() {
 			getTasksForExperiment(taskList[0].experiment.experimentId);
 		}, 3000);
 	} else {
+		// stop existing timer if exp ended
 		clearInterval(refreshId);
+		$('.progress-bar').removeClass('active');
+
+		// reformat progress-bar depending on exp-status
+		if (expStatus == 'COMPLETE') {
+			$('.progress-bar').addClass('progress-bar-success');
+		} else if (expStatus == 'FAILED') {
+			$('.progress-bar').html('Experiment Failed');
+			$('.progress-bar').addClass('progress-bar-danger');
+		}
+		// return
 		return;
 	}
 }
