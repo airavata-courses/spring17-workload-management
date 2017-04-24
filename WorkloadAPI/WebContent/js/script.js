@@ -204,7 +204,7 @@ function renderTaskListForExperiment() {
 	var expStatus = taskList[0].experiment.experimentStatus;
 
 	// refresh progress-bar
-	progress = (taskList.length / 5) * 100;
+	progress = (taskList.length / 5 - 0.01) * 100;
 	style = 'width: ' + progress.toString() + '%';
 	$('.progress-bar').attr('aria-valuenow', progress.toString());
 	$('.progress-bar').attr('style', style);
@@ -219,7 +219,6 @@ function renderTaskListForExperiment() {
 
 	// check if exp ended
 	if (expStatus != 'COMPLETE' && expStatus != 'FAILED') {
-		progress = (taskList.length / 5) * 100;
 		refreshId = setInterval(function() {
 			// get new taskList
 			getTasksForExperiment(taskList[0].experiment.experimentId);
@@ -228,15 +227,21 @@ function renderTaskListForExperiment() {
 		// stop existing timer if exp ended
 		clearInterval(refreshId);
 		$('.progress-bar').removeClass('active');
+		
+		// progress-bar 100%
+		$('.progress-bar').attr('aria-valuenow', '100');
+		$('.progress-bar').attr('style', 'width: 100%');
 
 		// reformat progress-bar depending on exp-status
 		if (expStatus == 'COMPLETE') {
+			$('.progress-bar').html('Experiment Complete');
 			$('.progress-bar').addClass('progress-bar-success');
 		} else if (expStatus == 'FAILED') {
 			$('.progress-bar').html('Experiment Failed');
 			$('.progress-bar').addClass('progress-bar-danger');
 		}
-		// return
+		// refresh exp-list and return
+		getExperimentList();
 		return;
 	}
 }
