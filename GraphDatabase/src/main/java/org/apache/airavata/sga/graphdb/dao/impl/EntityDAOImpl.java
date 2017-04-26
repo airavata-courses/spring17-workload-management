@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import org.apache.airavata.sga.commons.model.Experiment;
 import org.apache.airavata.sga.graphdb.entity.ExperimentEntity;
 import org.apache.airavata.sga.graphdb.entity.TaskStateEntity;
+import org.apache.airavata.sga.graphdb.utils.JPAUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -22,35 +23,28 @@ import org.apache.airavata.sga.graphdb.dao.EntityDAO;
 import java.util.List;
 
 public class EntityDAOImpl implements EntityDAO {
-
     Logger logger = LogManager.getLogger(EntityDAOImpl.class);
+
     @Override
     public void saveEntity(Object entity) throws Exception {
         try {
             logger.info("Saving entity in database. Entity: " + entity);
-            // Connection details loaded from persistence.xml to create EntityManagerFactory.
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa-state");
-
-            EntityManager em = emf.createEntityManager();
+            // Connection details loaded from persistence.xml to create EntityManager
+            EntityManager em = JPAUtils.getEntityManager();
 
             // Creating a new transaction.
             EntityTransaction tx = em.getTransaction();
-
             tx.begin();
 
             // Persisting the entity object.
             em.merge(entity);
 
-            //orderSubscriber.sendAck(deliveryTag);
-
             // Committing transaction.
             tx.commit();
-
             logger.info("DB persist successful; closing connections now!");
 
             // Closing connection.
             em.close();
-            emf.close();
         } catch (Exception ex) {
             logger.error("Error persisting entity in database. Error: " + ex.getMessage(), ex);
             throw ex;
@@ -62,13 +56,10 @@ public class EntityDAOImpl implements EntityDAO {
         int rowsUpdated;
         try {
             // Connection details loaded from persistence.xml to create EntityManagerFactory.
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa-state");
-
-            EntityManager em = emf.createEntityManager();
+            EntityManager em = JPAUtils.getEntityManager();
 
             // Creating a new transaction.
             EntityTransaction tx = em.getTransaction();
-
             tx.begin();
 
             Query query = em.createQuery("UPDATE State SET state = "+ state.getState() + " WHERE ID = " + state.getID() + "AND taskType =" + state.getExpType());
@@ -79,12 +70,10 @@ public class EntityDAOImpl implements EntityDAO {
 
             // Closing connection.
             em.close();
-            emf.close();
         } catch (Exception ex) {
             logger.error("Error getting customers from database. Error: " + ex.getMessage(), ex);
             throw ex;
         }
-
         return rowsUpdated;
     }
 
@@ -93,9 +82,7 @@ public class EntityDAOImpl implements EntityDAO {
         State state = null;
         try {
             // Connection details loaded from persistence.xml to create EntityManagerFactory.
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa-state");
-
-            EntityManager em = emf.createEntityManager();
+            EntityManager em = JPAUtils.getEntityManager();;
 
             // Creating a new transaction.
             EntityTransaction tx = em.getTransaction();
@@ -110,23 +97,19 @@ public class EntityDAOImpl implements EntityDAO {
 
             // Closing connection.
             em.close();
-            emf.close();
         } catch (Exception ex) {
             logger.error("Error getting customers from database. Error: " + ex.getMessage(), ex);
             throw ex;
         }
-
         return state;
     }
 
     @Override
     public ExperimentEntity getExperimentEntity(String experimentId) throws Exception {
-        EntityManagerFactory emf = null;
         EntityManager em = null;
         try {
             // Connection details loaded from persistence.xml to create EntityManagerFactory.
-            emf = Persistence.createEntityManagerFactory("jpa-state");
-            em = emf.createEntityManager();
+            em = JPAUtils.getEntityManager();
             ExperimentEntity experimentEntity = em.find(ExperimentEntity.class, experimentId);
             return experimentEntity;
         } catch (Exception ex) {
@@ -134,21 +117,18 @@ public class EntityDAOImpl implements EntityDAO {
             throw ex;
         } finally {
             // Closing connection.
-            if (emf != null && em!= null) {
+            if (em!= null) {
                 em.close();
-                emf.close();
             }
         }
     }
 
     @Override
     public TaskStateEntity getTaskStateEntity(String taskId) throws Exception {
-        EntityManagerFactory emf = null;
         EntityManager em = null;
         try {
             // Connection details loaded from persistence.xml to create EntityManagerFactory.
-            emf = Persistence.createEntityManagerFactory("jpa-state");
-            em = emf.createEntityManager();
+            em = JPAUtils.getEntityManager();
             TaskStateEntity taskStateEntity = em.find(TaskStateEntity.class, taskId);
             return taskStateEntity;
         } catch (Exception ex) {
@@ -156,9 +136,8 @@ public class EntityDAOImpl implements EntityDAO {
             throw ex;
         } finally {
             // Closing connection.
-            if (emf != null && em!= null) {
+            if (em!= null) {
                 em.close();
-                emf.close();
             }
         }
     }
@@ -166,12 +145,10 @@ public class EntityDAOImpl implements EntityDAO {
     @SuppressWarnings("unchecked")
     @Override
     public List<TaskStateEntity> getTaskListForExperiment(String experimentId) throws Exception {
-        EntityManagerFactory emf = null;
         EntityManager em = null;
         try {
             // Connection details loaded from persistence.xml to create EntityManagerFactory.
-            emf = Persistence.createEntityManagerFactory("jpa-state");
-            em = emf.createEntityManager();
+            em = JPAUtils.getEntityManager();
             Query query = em.createQuery("SELECT t FROM TaskStateEntity t " +
                     "WHERE t.experiment.experimentId = '" + experimentId + "'");
             List<TaskStateEntity> taskStateEntities = query.getResultList();
@@ -181,9 +158,8 @@ public class EntityDAOImpl implements EntityDAO {
             throw ex;
         } finally {
             // Closing connection.
-            if (emf != null && em!= null) {
+            if (em!= null) {
                 em.close();
-                emf.close();
             }
         }
     }
@@ -191,12 +167,10 @@ public class EntityDAOImpl implements EntityDAO {
     @SuppressWarnings("unchecked")
     @Override
     public List<ExperimentEntity> getExperimentList() throws Exception {
-        EntityManagerFactory emf = null;
         EntityManager em = null;
         try {
             // Connection details loaded from persistence.xml to create EntityManagerFactory.
-            emf = Persistence.createEntityManagerFactory("jpa-state");
-            em = emf.createEntityManager();
+            em = JPAUtils.getEntityManager();
             Query query = em.createQuery("SELECT e FROM ExperimentEntity e");
             List<ExperimentEntity> experimentList = query.getResultList();
             return experimentList;
@@ -205,9 +179,8 @@ public class EntityDAOImpl implements EntityDAO {
             throw ex;
         } finally {
             // Closing connection.
-            if (emf != null && em!= null) {
+            if (em!= null) {
                 em.close();
-                emf.close();
             }
         }
     }

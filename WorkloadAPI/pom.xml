@@ -137,8 +137,8 @@
 					<url>http://localhost:8080/manager/text</url>
 					<server>TomcatServer</server>
 					<path>/sample</path>
-					<username>gourav</username>
-					<password>password</password>
+					<username>airavata</username>
+					<password>airavata</password>
 				</configuration>
 			</plugin>
 		</plugins>
