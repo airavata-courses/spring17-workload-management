@@ -31,13 +31,6 @@ ENV MAVEN_HOME /opt/maven
 
 RUN yum -y install git
 
-# Make ssh dir
-#RUN mkdir /root/.ssh/
-#RUN chmod 600 /root/.ssh/
-
-# Copy over private key, and set permissions
-#ADD id_rsa /root/.ssh/
-
 RUN echo "** Cloning the workload repository"
 RUN git clone -b develop https://github.com/airavata-courses/spring17-workload-management.git
 
