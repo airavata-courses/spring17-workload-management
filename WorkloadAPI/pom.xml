@@ -25,7 +25,7 @@
 			<artifactId>neo4j</artifactId>
 			<version>${neo4j.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-cypher</artifactId>
@@ -37,7 +37,7 @@
 			<artifactId>neo4j-cypher-compiler-3.2</artifactId>
 			<version>3.2.0-alpha05</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -127,6 +127,18 @@
 					<webAppSourceDirectory>${project.basedir}/WebContent</webAppSourceDirectory>
 					<!-- <webApp> <contextPath>/sga</contextPath> </webApp> -->
 					<jettyXml>jetty.xml</jettyXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<url>http://localhost:8080/manager/text</url>
+					<server>TomcatServer</server>
+					<path>/sample</path>
+					<username>gourav</username>
+					<password>password</password>
 				</configuration>
 			</plugin>
 		</plugins>

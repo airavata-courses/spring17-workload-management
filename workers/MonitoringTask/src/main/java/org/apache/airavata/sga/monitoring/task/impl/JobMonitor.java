@@ -69,6 +69,7 @@ public class JobMonitor implements Runnable {
     class AuroraTimer extends TimerTask {
         AuroraThriftClient auroraClient;
         private boolean isRunning = true;
+        private int connectFailureRetry = 0;
 
         AuroraTimer() throws Exception {
             auroraClient = AuroraThriftClient.getAuroraThriftClient(auroraHost, auroraPort);
@@ -82,7 +83,25 @@ public class JobMonitor implements Runnable {
         public void run() {
             try {
                 while (isRunning) {
-                    JobDetailsResponseBean jobDetailsResponseBean = auroraClient.getJobDetails(jobKeyBean);
+                    JobDetailsResponseBean jobDetailsResponseBean = null;
+                    try {
+                       jobDetailsResponseBean  = auroraClient.getJobDetails(jobKeyBean);
+                       connectFailureRetry = 0;
+                    } catch (Exception ex) {
+                        if (ex.getMessage().contains("java.net.ConnectException") ||
+                                ex.getMessage().contains("Connection refused")) {
+                            logger.warn("AuroraClient threw CONNECTION REFUSED exception. Continuing..");
+
+                            // if connection-refused, retry 10 timess
+                            if (++connectFailureRetry == 10) {
+                                logger.error("Failed to connect to Aurora-Scheduler after 10 retries.", ex);
+                                throw new Exception("Failed to connect to Aurora-Scheduler after 10 retries.");
+                            }
+                        } else {
+                            throw ex;
+                        }
+                    }
+
                     List<ScheduledTask> tasks = jobDetailsResponseBean.getTasks();
                     switch (tasks.get(0).getStatus()) {
                         case FINISHED:
