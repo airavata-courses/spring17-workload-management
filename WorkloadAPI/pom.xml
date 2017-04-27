@@ -114,6 +114,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.0.0</version>
 				<configuration>
+					<webappDirectory>WebContent</webappDirectory>
 					<webXml>WebContent\WEB-INF\web.xml</webXml>
 				</configuration>
 			</plugin>
@@ -136,7 +137,7 @@
 				<configuration>
 					<url>http://localhost:8080/manager/text</url>
 					<server>TomcatServer</server>
-					<path>/sample</path>
+					<path>/workload</path>
 					<username>airavata</username>
 					<password>airavata</password>
 				</configuration>

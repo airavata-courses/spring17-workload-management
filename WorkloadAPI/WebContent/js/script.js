@@ -1,4 +1,4 @@
-var baseURI = "/sga/rest";
+var baseURI = "sga/rest";
 var getExperimentsAPI = baseURI + "/experiment";
 var launchExperimentAPI = getExperimentsAPI + "/launch"
 var getExprimentByIdAPI = baseURI + getExperimentsAPI + "/{0}";
