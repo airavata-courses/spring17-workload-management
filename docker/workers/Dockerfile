@@ -1,4 +1,4 @@
-FROM workloadbase
+FROM goshenoy/workloadbase:1.0
 MAINTAINER "Ajinkya Dhamnaskar"
 
 #Args

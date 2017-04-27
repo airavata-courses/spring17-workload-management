@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class Constants {
 
-    public static final String AMQP_URI = "amqp://airavata:airavata@149.165.228.91:5672/messaging";
+    public static final String AMQP_URI = "amqp://airavata:airavata@rabbitmq.marathon.l4lb.thisdcos.directory:15672/messaging";
     public static final boolean IS_DURABLE_QUEUE = true;
     public static final int PREFETCH_COUT = 20;
     public static final int QUEUE_MAX_PRIORITY = 10;

@@ -1,5 +1,7 @@
 package org.apache.airavata.sga.data.staging.task.entity;
 
+import java.io.File;
+
 /**
  * Created by Ajinkya on 2/16/17.
  */
@@ -8,7 +10,7 @@ public class ServerInfo {
     private String host;
     private String userName;
     private int port;
-    private String privateKey = "/Users/goshenoy/.ssh/id_rsa";
+    private String privateKey = "dcoskey";
     private String passphrase = "aq1sw2de3";
 
     public ServerInfo(String userName, String host, String privateKey) {
@@ -20,6 +22,11 @@ public class ServerInfo {
         this.userName = userName;
         this.port = port;
         //this.privateKey = privateKey;
+
+        this.privateKey = new File(
+                ServerInfo.class.getClassLoader().getResource("dcoskey").getFile()
+        ).getAbsolutePath();
+
     }
 
     public String getHost() {

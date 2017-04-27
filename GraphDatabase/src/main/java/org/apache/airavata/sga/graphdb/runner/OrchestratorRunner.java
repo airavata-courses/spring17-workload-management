@@ -4,6 +4,7 @@ import org.apache.airavata.sga.commons.model.SchedulingRequest;
 import org.apache.airavata.sga.graphdb.impl.Neo4JJavaDbOperation;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagingFactory;
+import org.apache.airavata.sga.graphdb.utils.DagCreation;
 import org.apache.airavata.sga.graphdb.utils.ZKUtils;
 import org.apache.airavata.sga.messaging.service.core.Subscriber;
 import org.slf4j.Logger;
@@ -21,6 +22,10 @@ public class OrchestratorRunner {
     private void startOrchestratorRunner() {
 
         try {
+            logger.info("Creating DAG for WorkloadMgr at: ");
+            DagCreation.main(new String[] {});
+            logger.info("Successfully created DAG");
+
             logger.info("Initializing orchestrator message subscriber");
             subscriber = OrchestratorMessagingFactory.getOrchestratorResponseSubscriber();
             logger.info("Orchestrator Response subscriber now listening: " + subscriber);
@@ -76,7 +81,7 @@ public class OrchestratorRunner {
 
             // recover existing jobs
             logger.info("Recovering lost jobs.");
-            new Thread(recovery).start();
+//            new Thread(recovery).start();
 
             // Moved below logic to OrchestratorMock in src/test/java
             /*

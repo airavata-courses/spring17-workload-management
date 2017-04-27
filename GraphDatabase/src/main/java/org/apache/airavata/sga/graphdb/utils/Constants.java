@@ -31,6 +31,11 @@ public class Constants {
 
     public static final String RUNNING_EXP_DIR = "running-exp-dir";
 
+    public static final String MYSQL_JDBC_DB = "mysql.jdbc.db";
+    public static final String MYSQL_JDBC_CONNECTION = "mysql.jdbc.connection";
+    public static final String MYSQL_JDBC_USER = "mysql.jdbc.user";
+    public static final String MYSQL_JDBC_PASSWORD = "mysql.jdbc.password";
+
     public static final Properties properties;
 
     public enum ExperimentStatus {
@@ -55,6 +60,22 @@ public class Constants {
         GRAPH_DB_LOCATION = properties.getProperty(GRAPH_DB_LOCATION_KEY);
         SCHEDULER_MESSAGE_RABBITMQ_PROPERTIES = getSchedulerMessageRabbitMQProperties();
         ORCHESTRATOR_RESPONSE_RABBITMQ_PROPERTIES = getOrchestratorResponseRabbitMQProperties();
+    }
+
+    public static String getMysqlJdbcConnection() {
+        return properties.getProperty(MYSQL_JDBC_CONNECTION);
+    }
+
+    public static String getMysqlJdbcUser() {
+        return properties.getProperty(MYSQL_JDBC_USER);
+    }
+
+    public static String getMysqlJdbcPassword() {
+        return properties.getProperty(MYSQL_JDBC_PASSWORD);
+    }
+
+    public static String getMysqlJdbcDb() {
+        return properties.getProperty(MYSQL_JDBC_DB);
     }
     
     private static RabbitMQProperties getSchedulerMessageRabbitMQProperties() {

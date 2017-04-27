@@ -41,8 +41,11 @@
 			<artifactId>openjpa</artifactId>
 			<version>${jpa.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
-		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-cypher -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>5.5.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j</artifactId>
@@ -171,9 +174,10 @@
 										implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<manifestEntries>
 										<Main-Class>org.apache.airavata.sga.graphdb.runner.OrchestratorRunner</Main-Class>
-										<Build-Number>${version}</Build-Number>
+										<Build-Number>${project.version}</Build-Number>
 									</manifestEntries>
 								</transformer>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 							</transformers>
 						</configuration>
 					</execution>
