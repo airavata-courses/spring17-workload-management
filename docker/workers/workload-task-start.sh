@@ -6,21 +6,21 @@ do
     case ${var} in
         
 	datastaging)
-           java -jar workers/DataStaging/target/DataStaging-1.0-SNAPSHOT.jar > logs/datastaging.log 2>&1 &
+           java -jar workers/DataStaging/target/DataStaging-1.0-SNAPSHOT.jar > logs/datastaging.log
             shift
         ;;
         jobsubmission)
-           java -jar workers/JobSubmissionTask/target/JobSubmissionTask-1.0-SNAPSHOT.jar > logs/jobsubmission.log 2>&1 &
+           java -jar workers/JobSubmissionTask/target/JobSubmissionTask-1.0-SNAPSHOT.jar > logs/jobsubmission.log
             shift
         ;;
         monitoring)
-           java -jar workers/MonitoringTask/target/MonitoringTask-1.0-SNAPSHOT.jar > logs/monitoring.log 2>&1 &
+           java -jar workers/MonitoringTask/target/MonitoringTask-1.0-SNAPSHOT.jar > logs/monitoring.log
             shift
         ;;
         all)
-            java -jar workers/DataStaging/target/DataStaging-1.0-SNAPSHOT.jar > logs/datastaging.log 2>&1 &
-            java -jar workers/JobSubmissionTask/target/JobSubmissionTask-1.0-SNAPSHOT.jar > logs/jobsubmission.log 2>&1 &
-            java -jar workers/MonitoringTask/target/MonitoringTask-1.0-SNAPSHOT.jar > logs/monitoring.log 2>&1 &
+            java -jar workers/DataStaging/target/DataStaging-1.0-SNAPSHOT.jar > logs/datastaging.log &
+            java -jar workers/JobSubmissionTask/target/JobSubmissionTask-1.0-SNAPSHOT.jar > logs/jobsubmission.log &
+            java -jar workers/MonitoringTask/target/MonitoringTask-1.0-SNAPSHOT.jar > logs/monitoring.log
             shift
         ;;    
         -h)
