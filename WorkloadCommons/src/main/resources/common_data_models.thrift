@@ -103,6 +103,25 @@ struct SchedulingRequest {
 	3: optional timestamp scheduleTime
 }
 
+struct ExperimentEntity{
+    1: required string experimentId,
+    2: required string experimentName,
+    3: required string experimentType,
+    4: required string experimentStatus,
+    5: required timestamp experimentStartTime,
+    6: optional timestamp experimentEndTime,
+    7: optional timestamp experimentLastUpdatedTime
+}
+
+struct TaskStateEntity{
+    1: required string taskId,
+    2: required ExperimentEntity experiment,
+    3: required string taskName,
+    4: required timestamp taskStartTime,
+    5: optional timestamp taskEndTime,
+    6: optional timestamp taskLastUpdatedTime
+}
+
 exception OperationFailedException {
 	1: required string message
 }

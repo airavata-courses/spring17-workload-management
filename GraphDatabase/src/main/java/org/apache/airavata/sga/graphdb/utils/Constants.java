@@ -36,6 +36,9 @@ public class Constants {
     public static final String MYSQL_JDBC_USER = "mysql.jdbc.user";
     public static final String MYSQL_JDBC_PASSWORD = "mysql.jdbc.password";
 
+    public static final String ORCHESTRATOR_SERVER_HOST;
+    public static final String ORCHESTRATOR_SERVER_PORT;
+
     public static final Properties properties;
 
     public enum ExperimentStatus {
@@ -56,6 +59,9 @@ public class Constants {
         } catch (IOException ex) {
             logger.error("Error loading properties: " + ex.getMessage(), ex);
         }
+        ORCHESTRATOR_SERVER_HOST = properties.getProperty("orchestrator.server.host");
+        ORCHESTRATOR_SERVER_PORT = properties.getProperty("orchestrator.server.port");
+
         ZOOKEEPER_SERVER = properties.getProperty(ZOOKEEPER_SERVER_CONNECTION);
         GRAPH_DB_LOCATION = properties.getProperty(GRAPH_DB_LOCATION_KEY);
         SCHEDULER_MESSAGE_RABBITMQ_PROPERTIES = getSchedulerMessageRabbitMQProperties();
