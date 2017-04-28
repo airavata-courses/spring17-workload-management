@@ -16,11 +16,24 @@
 	<properties>
 		<slf4j.version>1.7.5</slf4j.version>
 		<neo4j.version>3.1.1</neo4j.version>
+		<thrift.version>0.9.3</thrift.version>
 		<jettyVersion>9.2.11.v20150529</jettyVersion>
 	</properties>
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.thrift</groupId>
+			<artifactId>libthrift</artifactId>
+			<version>${thrift.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.airavata.sga</groupId>
+			<artifactId>WorkloadCommons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- <dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j</artifactId>
 			<version>${neo4j.version}</version>
@@ -36,7 +49,7 @@
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-cypher-compiler-3.2</artifactId>
 			<version>3.2.0-alpha05</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -63,11 +76,11 @@
 			<version>${slf4j.version}</version>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.airavata.sga</groupId>
 			<artifactId>Orchestrator</artifactId>
 			<version>${project.version}</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.apache.wink</groupId>

@@ -8,9 +8,10 @@ struct ExperimentEntity {
     1: required string experimentId,
     2: required string experimentName,
     3: required string experimentStatus,
-    4: required long experimentStartTime,
-    5: optional long experimentEndTime,
-    6: optional long experimentLastUpdatedTime
+    4: required string experimentType,
+    5: required long experimentStartTime,
+    6: optional long experimentEndTime,
+    7: optional long experimentLastUpdatedTime
 }
 
 struct TaskStateEntity {

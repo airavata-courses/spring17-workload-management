@@ -12,9 +12,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.airavata.sga.graphdb.entity.ExperimentEntity;
-import org.apache.airavata.sga.graphdb.entity.TaskStateEntity;
-import org.apache.airavata.sga.graphdb.utils.OrchestratorUtil;
+import org.apache.airavata.sga.commons.db.model.ExperimentEntity;
+import org.apache.airavata.sga.commons.db.model.TaskStateEntity;
+import org.apache.airavata.sga.orchestrator.client.OrchestratorServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class ExperimentResource {
 		ResponseBuilder response = null;
 		try {		
 			logger.info("Submitting experiment with type: {}", experimentType);
-			String experimentId = OrchestratorUtil.submitJob(experimentType);
+			String experimentId = OrchestratorServiceClient.submitJob(experimentType);
 			logger.info("Launched experiment with Id: {}, type: {}", experimentId, experimentType);
 			response = Response.ok("{ \"experimentId\": \"" + experimentId + "\" }");
 		} catch (Exception ex) {
@@ -49,7 +49,7 @@ public class ExperimentResource {
 		ResponseBuilder response = null;
 		try {		
 			logger.info("Getting experiment list");
-			List<ExperimentEntity> experimentList = OrchestratorUtil.getExperimentList();
+			List<ExperimentEntity> experimentList = OrchestratorServiceClient.getExperiments();
 			
 			String expJSON = mapper.writeValueAsString(experimentList);
 			logger.info("Retrieved experiment list: {}", expJSON);
@@ -67,7 +67,7 @@ public class ExperimentResource {
 		ResponseBuilder response = null;
 		try {		
 			logger.info("Getting experiment with Id: {}", experimentId);
-			ExperimentEntity experiment = OrchestratorUtil.getExperiment(experimentId);
+			ExperimentEntity experiment = OrchestratorServiceClient.getExperiment(experimentId);
 			
 			String expJSON = mapper.writeValueAsString(experiment);
 			logger.info("Retrieved experiment: {}", expJSON);
@@ -84,7 +84,7 @@ public class ExperimentResource {
 		ResponseBuilder response = null;
 		try {		
 			logger.info("Getting task-list for experiment with Id: {}", experimentId);
-			List<TaskStateEntity> taskList = OrchestratorUtil.getTasksForExperiment(experimentId);
+			List<TaskStateEntity> taskList = OrchestratorServiceClient.getTasksForExperiment(experimentId);
 			
 			String taskListJSON = mapper.writeValueAsString(taskList);
 			logger.info("Retrieved task-list: {}", taskListJSON);
