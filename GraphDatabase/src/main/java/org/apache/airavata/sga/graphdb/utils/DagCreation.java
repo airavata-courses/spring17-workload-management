@@ -3,28 +3,14 @@ package org.apache.airavata.sga.graphdb.utils;
 import static java.lang.Math.max;
 import static java.lang.System.currentTimeMillis;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-
-import org.apache.airavata.sga.commons.model.*;
 import org.apache.airavata.sga.graphdb.impl.Neo4JJavaDbOperation;
-import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 public class DagCreation {
 
-
-	private static Connection conn = null;
 	private static final Random RANDOM = new Random();
-	public static String EXP_ID;
-	private static DummySchedulingRequest dummy = new DummySchedulingRequest();
 
 	private static byte[] randomBigByteArray() {
 		byte[] array = new byte[max(248, RANDOM.nextInt(248 * 1024))];
@@ -35,21 +21,16 @@ public class DagCreation {
 
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		File f = new File(Constants.GRAPH_DB_LOCATION);
-		GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
-		GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
-		Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
 
-		try (Transaction tx = db.beginTx()) {
+		try (Transaction tx = Neo4JJavaDbOperation.GRAPH_DB.beginTx()) {
 
-			db.execute("MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r");
+			Neo4JJavaDbOperation.GRAPH_DB.execute("MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r");
 
-			Node ENV_SETUP = db.createNode(States.ENV_SETUP);
-			Node INPUT_DATA_STAGING = db.createNode(States.INPUT_DATA_STAGING);
-			Node JOB_SUBMISSION = db.createNode(States.JOB_SUBMISSION);
-			Node MONITORING = db.createNode(States.MONITORING);
-			Node OUTPUT_DATA_STAGING = db.createNode(States.OUTPUT_DATA_STAGING);
+			Node ENV_SETUP = Neo4JJavaDbOperation.GRAPH_DB.createNode(States.ENV_SETUP);
+			Node INPUT_DATA_STAGING = Neo4JJavaDbOperation.GRAPH_DB.createNode(States.INPUT_DATA_STAGING);
+			Node JOB_SUBMISSION = Neo4JJavaDbOperation.GRAPH_DB.createNode(States.JOB_SUBMISSION);
+			Node MONITORING = Neo4JJavaDbOperation.GRAPH_DB.createNode(States.MONITORING);
+			Node OUTPUT_DATA_STAGING = Neo4JJavaDbOperation.GRAPH_DB.createNode(States.OUTPUT_DATA_STAGING);
 
 			ENV_SETUP.createRelationshipTo(INPUT_DATA_STAGING, ExpTypes.BIOLOGY);
 			INPUT_DATA_STAGING.createRelationshipTo(JOB_SUBMISSION, ExpTypes.BIOLOGY);

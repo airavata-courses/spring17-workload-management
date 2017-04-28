@@ -8,11 +8,9 @@ import org.apache.airavata.sga.graphdb.entity.TaskStateEntity;
 import org.apache.airavata.sga.graphdb.impl.Neo4JJavaDbOperation;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
 import org.neo4j.graphdb.*;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -38,12 +36,10 @@ public class OrchestratorUtil {
             nodesList = neo4JJavaDbOperation.getCompleteDag(experimentType);
 
             Node[] arrNode = new Node[nodesList.size()];
-            File f = new File(Constants.GRAPH_DB_LOCATION);
-            GraphDatabaseFactory dbFactory = new GraphDatabaseFactory();
-            GraphDatabaseService db = dbFactory.newEmbeddedDatabase(f);
-            try (Transaction tx = db.beginTx()){
+
+            try (Transaction tx = Neo4JJavaDbOperation.GRAPH_DB.beginTx()){
                 for(int i = 0; i < nodesList.size(); i++){
-                    arrNode[i] = db.createNode(Label.label(nodesList.get(i)));
+                    arrNode[i] = Neo4JJavaDbOperation.GRAPH_DB.createNode(Label.label(nodesList.get(i)));
                     schedulingRequest = DummySchedulingRequest.getSchedulingRequest(Constants.fromString(nodesList.get(i)), experimentId);
                     byte[] schdReq = SerializationUtils.convertToBytes(schedulingRequest);
                     arrNode[i].setProperty("schedulingRequest",schdReq);
@@ -57,7 +53,7 @@ public class OrchestratorUtil {
             } catch (Exception e) {
                 e.printStackTrace();
             }finally{
-                db.shutdown();
+                //db.shutdown();
             }
 
             logger.info("creating zookeeper node for experiment : " + experimentId);
@@ -73,7 +69,6 @@ public class OrchestratorUtil {
             logger.info("[" + Thread.currentThread().getId() + "] Submitting Orchestrator Request for ExperimentType: " + experimentType + ", experimentId: " + experimentId);
             orchestratorMessagePublisher.publishSchedulingRequest(schedulingRequest);
 
-            // return experimentId
             return experimentId;
         } catch (Exception ex) {
             logger.error("Error running Orc, reason: " + ex, ex);
