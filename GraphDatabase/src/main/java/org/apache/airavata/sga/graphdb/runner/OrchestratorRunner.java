@@ -29,13 +29,18 @@ public class OrchestratorRunner {
     private static OrchestratorService.Processor<Iface> processor;
     private static OrchestratorServerHandler handler;
 
-    private void startOrchestratorRunner() {
-
+    private void createDAG() {
         try {
             logger.info("Creating DAG for WorkloadMgr at: ");
             DagCreation.main(new String[] {});
             logger.info("Successfully created DAG");
+        } catch (Exception ex) {
+            logger.error("Something went wrong creating DAG. Error: " + ex, ex);
+        }
+    }
 
+    private void startOrchestratorRunner() {
+        try {
             logger.info("Initializing orchestrator message subscriber");
             subscriber = OrchestratorMessagingFactory.getOrchestratorResponseSubscriber();
             logger.info("Orchestrator Response subscriber now listening: " + subscriber);
@@ -85,6 +90,14 @@ public class OrchestratorRunner {
         processor = new OrchestratorService.Processor<Iface>(handler);
 
         try {
+            Runnable dagCreation = new Runnable() {
+                @Override
+                public void run() {
+                    OrchestratorRunner orchestratorRunner = new OrchestratorRunner();
+                    orchestratorRunner.createDAG();
+                }
+            };
+
             Runnable runner = new Runnable() {
                 @Override
                 public void run() {
@@ -107,6 +120,10 @@ public class OrchestratorRunner {
                     startOrchestratorServer(processor);
                 }
             };
+
+            // create DAG
+            logger.info("Creating DAG");
+            new Thread(dagCreation).start();
 
             // start the worker thread
             logger.info("Starting the Orchestrator.");
