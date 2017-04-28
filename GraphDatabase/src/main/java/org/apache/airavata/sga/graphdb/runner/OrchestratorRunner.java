@@ -52,14 +52,10 @@ public class OrchestratorRunner {
 
     private static void startOrchestratorServer(OrchestratorService.Processor<Iface> processor) {
         try {
-            logger.info("OrchestratorService starting simple-server listening to port 9090");
-            TServerTransport serverTransport = new TServerSocket(9090);
-            TServer server = new TSimpleServer(new TServer.Args(serverTransport).processor(processor));
-            server.serve();
+            logger.info("Starting OrchestratorService Thrift Server.");
+            new OrchestratorServer().start();
         } catch (Exception ex) {
             logger.error("Something went wrong starting Orchestrator Server. Error: " + ex.getMessage(), ex);
-        } finally {
-            logger.info("OrchestratorService stopped!");
         }
     }
 
