@@ -13,7 +13,7 @@ service OrchestratorService {
     db_data_models.ExperimentEntity getExperiment(1: required string experimentId)
                 throws (1: OrchestratorServiceException ose);
 
-    db_data_models.TaskStateEntity getTaskForExperiment(1: required string experimentId)
+    db_data_models.TaskStateEntity getTaskDetails(1: required string taskId)
                 throws (1: OrchestratorServiceException ose);
 
     list<db_data_models.ExperimentEntity> getExperiments()

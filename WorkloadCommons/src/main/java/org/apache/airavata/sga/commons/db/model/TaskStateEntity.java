@@ -70,8 +70,8 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
   public String taskId; // required
   public String taskName; // required
   public long taskStartTime; // required
-  public long taskEndTime; // required
-  public long taskLastUpdatedTime; // required
+  public long taskEndTime; // optional
+  public long taskLastUpdatedTime; // optional
   public ExperimentEntity experiment; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -152,6 +152,7 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
   private static final int __TASKENDTIME_ISSET_ID = 1;
   private static final int __TASKLASTUPDATEDTIME_ISSET_ID = 2;
   private byte __isset_bitfield = 0;
+  private static final _Fields optionals[] = {_Fields.TASK_END_TIME,_Fields.TASK_LAST_UPDATED_TIME};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -161,9 +162,9 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.TASK_START_TIME, new org.apache.thrift.meta_data.FieldMetaData("taskStartTime", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64        , "long")));
-    tmpMap.put(_Fields.TASK_END_TIME, new org.apache.thrift.meta_data.FieldMetaData("taskEndTime", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+    tmpMap.put(_Fields.TASK_END_TIME, new org.apache.thrift.meta_data.FieldMetaData("taskEndTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64        , "long")));
-    tmpMap.put(_Fields.TASK_LAST_UPDATED_TIME, new org.apache.thrift.meta_data.FieldMetaData("taskLastUpdatedTime", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+    tmpMap.put(_Fields.TASK_LAST_UPDATED_TIME, new org.apache.thrift.meta_data.FieldMetaData("taskLastUpdatedTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64        , "long")));
     tmpMap.put(_Fields.EXPERIMENT, new org.apache.thrift.meta_data.FieldMetaData("experiment", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ExperimentEntity.class)));
@@ -178,8 +179,6 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
     String taskId,
     String taskName,
     long taskStartTime,
-    long taskEndTime,
-    long taskLastUpdatedTime,
     ExperimentEntity experiment)
   {
     this();
@@ -187,10 +186,6 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
     this.taskName = taskName;
     this.taskStartTime = taskStartTime;
     setTaskStartTimeIsSet(true);
-    this.taskEndTime = taskEndTime;
-    setTaskEndTimeIsSet(true);
-    this.taskLastUpdatedTime = taskLastUpdatedTime;
-    setTaskLastUpdatedTimeIsSet(true);
     this.experiment = experiment;
   }
 
@@ -511,8 +506,8 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
         return false;
     }
 
-    boolean this_present_taskEndTime = true;
-    boolean that_present_taskEndTime = true;
+    boolean this_present_taskEndTime = true && this.isSetTaskEndTime();
+    boolean that_present_taskEndTime = true && that.isSetTaskEndTime();
     if (this_present_taskEndTime || that_present_taskEndTime) {
       if (!(this_present_taskEndTime && that_present_taskEndTime))
         return false;
@@ -520,8 +515,8 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
         return false;
     }
 
-    boolean this_present_taskLastUpdatedTime = true;
-    boolean that_present_taskLastUpdatedTime = true;
+    boolean this_present_taskLastUpdatedTime = true && this.isSetTaskLastUpdatedTime();
+    boolean that_present_taskLastUpdatedTime = true && that.isSetTaskLastUpdatedTime();
     if (this_present_taskLastUpdatedTime || that_present_taskLastUpdatedTime) {
       if (!(this_present_taskLastUpdatedTime && that_present_taskLastUpdatedTime))
         return false;
@@ -560,12 +555,12 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
     if (present_taskStartTime)
       list.add(taskStartTime);
 
-    boolean present_taskEndTime = true;
+    boolean present_taskEndTime = true && (isSetTaskEndTime());
     list.add(present_taskEndTime);
     if (present_taskEndTime)
       list.add(taskEndTime);
 
-    boolean present_taskLastUpdatedTime = true;
+    boolean present_taskLastUpdatedTime = true && (isSetTaskLastUpdatedTime());
     list.add(present_taskLastUpdatedTime);
     if (present_taskLastUpdatedTime)
       list.add(taskLastUpdatedTime);
@@ -685,14 +680,18 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
     sb.append("taskStartTime:");
     sb.append(this.taskStartTime);
     first = false;
-    if (!first) sb.append(", ");
-    sb.append("taskEndTime:");
-    sb.append(this.taskEndTime);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("taskLastUpdatedTime:");
-    sb.append(this.taskLastUpdatedTime);
-    first = false;
+    if (isSetTaskEndTime()) {
+      if (!first) sb.append(", ");
+      sb.append("taskEndTime:");
+      sb.append(this.taskEndTime);
+      first = false;
+    }
+    if (isSetTaskLastUpdatedTime()) {
+      if (!first) sb.append(", ");
+      sb.append("taskLastUpdatedTime:");
+      sb.append(this.taskLastUpdatedTime);
+      first = false;
+    }
     if (!first) sb.append(", ");
     sb.append("experiment:");
     if (this.experiment == null) {
@@ -714,8 +713,6 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'taskName' was not present! Struct: " + toString());
     }
     // alas, we cannot check 'taskStartTime' because it's a primitive and you chose the non-beans generator.
-    // alas, we cannot check 'taskEndTime' because it's a primitive and you chose the non-beans generator.
-    // alas, we cannot check 'taskLastUpdatedTime' because it's a primitive and you chose the non-beans generator.
     if (experiment == null) {
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'experiment' was not present! Struct: " + toString());
     }
@@ -821,12 +818,6 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
       if (!struct.isSetTaskStartTime()) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'taskStartTime' was not found in serialized data! Struct: " + toString());
       }
-      if (!struct.isSetTaskEndTime()) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'taskEndTime' was not found in serialized data! Struct: " + toString());
-      }
-      if (!struct.isSetTaskLastUpdatedTime()) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'taskLastUpdatedTime' was not found in serialized data! Struct: " + toString());
-      }
       struct.validate();
     }
 
@@ -847,12 +838,16 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
       oprot.writeFieldBegin(TASK_START_TIME_FIELD_DESC);
       oprot.writeI64(struct.taskStartTime);
       oprot.writeFieldEnd();
-      oprot.writeFieldBegin(TASK_END_TIME_FIELD_DESC);
-      oprot.writeI64(struct.taskEndTime);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(TASK_LAST_UPDATED_TIME_FIELD_DESC);
-      oprot.writeI64(struct.taskLastUpdatedTime);
-      oprot.writeFieldEnd();
+      if (struct.isSetTaskEndTime()) {
+        oprot.writeFieldBegin(TASK_END_TIME_FIELD_DESC);
+        oprot.writeI64(struct.taskEndTime);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetTaskLastUpdatedTime()) {
+        oprot.writeFieldBegin(TASK_LAST_UPDATED_TIME_FIELD_DESC);
+        oprot.writeI64(struct.taskLastUpdatedTime);
+        oprot.writeFieldEnd();
+      }
       if (struct.experiment != null) {
         oprot.writeFieldBegin(EXPERIMENT_FIELD_DESC);
         struct.experiment.write(oprot);
@@ -878,9 +873,21 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
       oprot.writeString(struct.taskId);
       oprot.writeString(struct.taskName);
       oprot.writeI64(struct.taskStartTime);
-      oprot.writeI64(struct.taskEndTime);
-      oprot.writeI64(struct.taskLastUpdatedTime);
       struct.experiment.write(oprot);
+      BitSet optionals = new BitSet();
+      if (struct.isSetTaskEndTime()) {
+        optionals.set(0);
+      }
+      if (struct.isSetTaskLastUpdatedTime()) {
+        optionals.set(1);
+      }
+      oprot.writeBitSet(optionals, 2);
+      if (struct.isSetTaskEndTime()) {
+        oprot.writeI64(struct.taskEndTime);
+      }
+      if (struct.isSetTaskLastUpdatedTime()) {
+        oprot.writeI64(struct.taskLastUpdatedTime);
+      }
     }
 
     @Override
@@ -892,13 +899,18 @@ public class TaskStateEntity implements org.apache.thrift.TBase<TaskStateEntity,
       struct.setTaskNameIsSet(true);
       struct.taskStartTime = iprot.readI64();
       struct.setTaskStartTimeIsSet(true);
-      struct.taskEndTime = iprot.readI64();
-      struct.setTaskEndTimeIsSet(true);
-      struct.taskLastUpdatedTime = iprot.readI64();
-      struct.setTaskLastUpdatedTimeIsSet(true);
       struct.experiment = new ExperimentEntity();
       struct.experiment.read(iprot);
       struct.setExperimentIsSet(true);
+      BitSet incoming = iprot.readBitSet(2);
+      if (incoming.get(0)) {
+        struct.taskEndTime = iprot.readI64();
+        struct.setTaskEndTimeIsSet(true);
+      }
+      if (incoming.get(1)) {
+        struct.taskLastUpdatedTime = iprot.readI64();
+        struct.setTaskLastUpdatedTimeIsSet(true);
+      }
     }
   }
 

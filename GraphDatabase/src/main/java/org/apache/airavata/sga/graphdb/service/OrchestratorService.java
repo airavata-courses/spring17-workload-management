@@ -59,7 +59,7 @@ public class OrchestratorService {
 
     public org.apache.airavata.sga.commons.db.model.ExperimentEntity getExperiment(String experimentId) throws OrchestratorServiceException, org.apache.thrift.TException;
 
-    public org.apache.airavata.sga.commons.db.model.TaskStateEntity getTaskForExperiment(String experimentId) throws OrchestratorServiceException, org.apache.thrift.TException;
+    public org.apache.airavata.sga.commons.db.model.TaskStateEntity getTaskDetails(String taskId) throws OrchestratorServiceException, org.apache.thrift.TException;
 
     public List<org.apache.airavata.sga.commons.db.model.ExperimentEntity> getExperiments() throws OrchestratorServiceException, org.apache.thrift.TException;
 
@@ -73,7 +73,7 @@ public class OrchestratorService {
 
     public void getExperiment(String experimentId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getTaskForExperiment(String experimentId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getTaskDetails(String taskId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void getExperiments(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -153,30 +153,30 @@ public class OrchestratorService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getExperiment failed: unknown result");
     }
 
-    public org.apache.airavata.sga.commons.db.model.TaskStateEntity getTaskForExperiment(String experimentId) throws OrchestratorServiceException, org.apache.thrift.TException
+    public org.apache.airavata.sga.commons.db.model.TaskStateEntity getTaskDetails(String taskId) throws OrchestratorServiceException, org.apache.thrift.TException
     {
-      send_getTaskForExperiment(experimentId);
-      return recv_getTaskForExperiment();
+      send_getTaskDetails(taskId);
+      return recv_getTaskDetails();
     }
 
-    public void send_getTaskForExperiment(String experimentId) throws org.apache.thrift.TException
+    public void send_getTaskDetails(String taskId) throws org.apache.thrift.TException
     {
-      getTaskForExperiment_args args = new getTaskForExperiment_args();
-      args.setExperimentId(experimentId);
-      sendBase("getTaskForExperiment", args);
+      getTaskDetails_args args = new getTaskDetails_args();
+      args.setTaskId(taskId);
+      sendBase("getTaskDetails", args);
     }
 
-    public org.apache.airavata.sga.commons.db.model.TaskStateEntity recv_getTaskForExperiment() throws OrchestratorServiceException, org.apache.thrift.TException
+    public org.apache.airavata.sga.commons.db.model.TaskStateEntity recv_getTaskDetails() throws OrchestratorServiceException, org.apache.thrift.TException
     {
-      getTaskForExperiment_result result = new getTaskForExperiment_result();
-      receiveBase(result, "getTaskForExperiment");
+      getTaskDetails_result result = new getTaskDetails_result();
+      receiveBase(result, "getTaskDetails");
       if (result.isSetSuccess()) {
         return result.success;
       }
       if (result.ose != null) {
         throw result.ose;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getTaskForExperiment failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getTaskDetails failed: unknown result");
     }
 
     public List<org.apache.airavata.sga.commons.db.model.ExperimentEntity> getExperiments() throws OrchestratorServiceException, org.apache.thrift.TException
@@ -312,24 +312,24 @@ public class OrchestratorService {
       }
     }
 
-    public void getTaskForExperiment(String experimentId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getTaskDetails(String taskId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getTaskForExperiment_call method_call = new getTaskForExperiment_call(experimentId, resultHandler, this, ___protocolFactory, ___transport);
+      getTaskDetails_call method_call = new getTaskDetails_call(taskId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class getTaskForExperiment_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private String experimentId;
-      public getTaskForExperiment_call(String experimentId, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+    public static class getTaskDetails_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private String taskId;
+      public getTaskDetails_call(String taskId, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.experimentId = experimentId;
+        this.taskId = taskId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getTaskForExperiment", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getTaskForExperiment_args args = new getTaskForExperiment_args();
-        args.setExperimentId(experimentId);
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getTaskDetails", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getTaskDetails_args args = new getTaskDetails_args();
+        args.setTaskId(taskId);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -340,7 +340,7 @@ public class OrchestratorService {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getTaskForExperiment();
+        return (new Client(prot)).recv_getTaskDetails();
       }
     }
 
@@ -420,7 +420,7 @@ public class OrchestratorService {
     private static <I extends Iface> Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> getProcessMap(Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
       processMap.put("submitJob", new submitJob());
       processMap.put("getExperiment", new getExperiment());
-      processMap.put("getTaskForExperiment", new getTaskForExperiment());
+      processMap.put("getTaskDetails", new getTaskDetails());
       processMap.put("getExperiments", new getExperiments());
       processMap.put("getTasksForExperiment", new getTasksForExperiment());
       return processMap;
@@ -474,23 +474,23 @@ public class OrchestratorService {
       }
     }
 
-    public static class getTaskForExperiment<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getTaskForExperiment_args> {
-      public getTaskForExperiment() {
-        super("getTaskForExperiment");
+    public static class getTaskDetails<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getTaskDetails_args> {
+      public getTaskDetails() {
+        super("getTaskDetails");
       }
 
-      public getTaskForExperiment_args getEmptyArgsInstance() {
-        return new getTaskForExperiment_args();
+      public getTaskDetails_args getEmptyArgsInstance() {
+        return new getTaskDetails_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public getTaskForExperiment_result getResult(I iface, getTaskForExperiment_args args) throws org.apache.thrift.TException {
-        getTaskForExperiment_result result = new getTaskForExperiment_result();
+      public getTaskDetails_result getResult(I iface, getTaskDetails_args args) throws org.apache.thrift.TException {
+        getTaskDetails_result result = new getTaskDetails_result();
         try {
-          result.success = iface.getTaskForExperiment(args.experimentId);
+          result.success = iface.getTaskDetails(args.taskId);
         } catch (OrchestratorServiceException ose) {
           result.ose = ose;
         }
@@ -561,7 +561,7 @@ public class OrchestratorService {
     private static <I extends AsyncIface> Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       processMap.put("submitJob", new submitJob());
       processMap.put("getExperiment", new getExperiment());
-      processMap.put("getTaskForExperiment", new getTaskForExperiment());
+      processMap.put("getTaskDetails", new getTaskDetails());
       processMap.put("getExperiments", new getExperiments());
       processMap.put("getTasksForExperiment", new getTasksForExperiment());
       return processMap;
@@ -681,20 +681,20 @@ public class OrchestratorService {
       }
     }
 
-    public static class getTaskForExperiment<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getTaskForExperiment_args, org.apache.airavata.sga.commons.db.model.TaskStateEntity> {
-      public getTaskForExperiment() {
-        super("getTaskForExperiment");
+    public static class getTaskDetails<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getTaskDetails_args, org.apache.airavata.sga.commons.db.model.TaskStateEntity> {
+      public getTaskDetails() {
+        super("getTaskDetails");
       }
 
-      public getTaskForExperiment_args getEmptyArgsInstance() {
-        return new getTaskForExperiment_args();
+      public getTaskDetails_args getEmptyArgsInstance() {
+        return new getTaskDetails_args();
       }
 
       public AsyncMethodCallback<org.apache.airavata.sga.commons.db.model.TaskStateEntity> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new AsyncMethodCallback<org.apache.airavata.sga.commons.db.model.TaskStateEntity>() { 
           public void onComplete(org.apache.airavata.sga.commons.db.model.TaskStateEntity o) {
-            getTaskForExperiment_result result = new getTaskForExperiment_result();
+            getTaskDetails_result result = new getTaskDetails_result();
             result.success = o;
             try {
               fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
@@ -707,7 +707,7 @@ public class OrchestratorService {
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
-            getTaskForExperiment_result result = new getTaskForExperiment_result();
+            getTaskDetails_result result = new getTaskDetails_result();
             if (e instanceof OrchestratorServiceException) {
                         result.ose = (OrchestratorServiceException) e;
                         result.setOseIsSet(true);
@@ -733,8 +733,8 @@ public class OrchestratorService {
         return false;
       }
 
-      public void start(I iface, getTaskForExperiment_args args, org.apache.thrift.async.AsyncMethodCallback<org.apache.airavata.sga.commons.db.model.TaskStateEntity> resultHandler) throws TException {
-        iface.getTaskForExperiment(args.experimentId,resultHandler);
+      public void start(I iface, getTaskDetails_args args, org.apache.thrift.async.AsyncMethodCallback<org.apache.airavata.sga.commons.db.model.TaskStateEntity> resultHandler) throws TException {
+        iface.getTaskDetails(args.taskId,resultHandler);
       }
     }
 
@@ -2503,22 +2503,22 @@ public class OrchestratorService {
 
   }
 
-  public static class getTaskForExperiment_args implements org.apache.thrift.TBase<getTaskForExperiment_args, getTaskForExperiment_args._Fields>, java.io.Serializable, Cloneable, Comparable<getTaskForExperiment_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getTaskForExperiment_args");
+  public static class getTaskDetails_args implements org.apache.thrift.TBase<getTaskDetails_args, getTaskDetails_args._Fields>, java.io.Serializable, Cloneable, Comparable<getTaskDetails_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getTaskDetails_args");
 
-    private static final org.apache.thrift.protocol.TField EXPERIMENT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentId", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField TASK_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("taskId", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getTaskForExperiment_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getTaskForExperiment_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new getTaskDetails_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getTaskDetails_argsTupleSchemeFactory());
     }
 
-    public String experimentId; // required
+    public String taskId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      EXPERIMENT_ID((short)1, "experimentId");
+      TASK_ID((short)1, "taskId");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -2533,8 +2533,8 @@ public class OrchestratorService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // EXPERIMENT_ID
-            return EXPERIMENT_ID;
+          case 1: // TASK_ID
+            return TASK_ID;
           default:
             return null;
         }
@@ -2578,71 +2578,71 @@ public class OrchestratorService {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.EXPERIMENT_ID, new org.apache.thrift.meta_data.FieldMetaData("experimentId", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+      tmpMap.put(_Fields.TASK_ID, new org.apache.thrift.meta_data.FieldMetaData("taskId", org.apache.thrift.TFieldRequirementType.REQUIRED, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTaskForExperiment_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTaskDetails_args.class, metaDataMap);
     }
 
-    public getTaskForExperiment_args() {
+    public getTaskDetails_args() {
     }
 
-    public getTaskForExperiment_args(
-      String experimentId)
+    public getTaskDetails_args(
+      String taskId)
     {
       this();
-      this.experimentId = experimentId;
+      this.taskId = taskId;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getTaskForExperiment_args(getTaskForExperiment_args other) {
-      if (other.isSetExperimentId()) {
-        this.experimentId = other.experimentId;
+    public getTaskDetails_args(getTaskDetails_args other) {
+      if (other.isSetTaskId()) {
+        this.taskId = other.taskId;
       }
     }
 
-    public getTaskForExperiment_args deepCopy() {
-      return new getTaskForExperiment_args(this);
+    public getTaskDetails_args deepCopy() {
+      return new getTaskDetails_args(this);
     }
 
     @Override
     public void clear() {
-      this.experimentId = null;
+      this.taskId = null;
     }
 
-    public String getExperimentId() {
-      return this.experimentId;
+    public String getTaskId() {
+      return this.taskId;
     }
 
-    public getTaskForExperiment_args setExperimentId(String experimentId) {
-      this.experimentId = experimentId;
+    public getTaskDetails_args setTaskId(String taskId) {
+      this.taskId = taskId;
       return this;
     }
 
-    public void unsetExperimentId() {
-      this.experimentId = null;
+    public void unsetTaskId() {
+      this.taskId = null;
     }
 
-    /** Returns true if field experimentId is set (has been assigned a value) and false otherwise */
-    public boolean isSetExperimentId() {
-      return this.experimentId != null;
+    /** Returns true if field taskId is set (has been assigned a value) and false otherwise */
+    public boolean isSetTaskId() {
+      return this.taskId != null;
     }
 
-    public void setExperimentIdIsSet(boolean value) {
+    public void setTaskIdIsSet(boolean value) {
       if (!value) {
-        this.experimentId = null;
+        this.taskId = null;
       }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case EXPERIMENT_ID:
+      case TASK_ID:
         if (value == null) {
-          unsetExperimentId();
+          unsetTaskId();
         } else {
-          setExperimentId((String)value);
+          setTaskId((String)value);
         }
         break;
 
@@ -2651,8 +2651,8 @@ public class OrchestratorService {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case EXPERIMENT_ID:
-        return getExperimentId();
+      case TASK_ID:
+        return getTaskId();
 
       }
       throw new IllegalStateException();
@@ -2665,8 +2665,8 @@ public class OrchestratorService {
       }
 
       switch (field) {
-      case EXPERIMENT_ID:
-        return isSetExperimentId();
+      case TASK_ID:
+        return isSetTaskId();
       }
       throw new IllegalStateException();
     }
@@ -2675,21 +2675,21 @@ public class OrchestratorService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getTaskForExperiment_args)
-        return this.equals((getTaskForExperiment_args)that);
+      if (that instanceof getTaskDetails_args)
+        return this.equals((getTaskDetails_args)that);
       return false;
     }
 
-    public boolean equals(getTaskForExperiment_args that) {
+    public boolean equals(getTaskDetails_args that) {
       if (that == null)
         return false;
 
-      boolean this_present_experimentId = true && this.isSetExperimentId();
-      boolean that_present_experimentId = true && that.isSetExperimentId();
-      if (this_present_experimentId || that_present_experimentId) {
-        if (!(this_present_experimentId && that_present_experimentId))
+      boolean this_present_taskId = true && this.isSetTaskId();
+      boolean that_present_taskId = true && that.isSetTaskId();
+      if (this_present_taskId || that_present_taskId) {
+        if (!(this_present_taskId && that_present_taskId))
           return false;
-        if (!this.experimentId.equals(that.experimentId))
+        if (!this.taskId.equals(that.taskId))
           return false;
       }
 
@@ -2700,28 +2700,28 @@ public class OrchestratorService {
     public int hashCode() {
       List<Object> list = new ArrayList<Object>();
 
-      boolean present_experimentId = true && (isSetExperimentId());
-      list.add(present_experimentId);
-      if (present_experimentId)
-        list.add(experimentId);
+      boolean present_taskId = true && (isSetTaskId());
+      list.add(present_taskId);
+      if (present_taskId)
+        list.add(taskId);
 
       return list.hashCode();
     }
 
     @Override
-    public int compareTo(getTaskForExperiment_args other) {
+    public int compareTo(getTaskDetails_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetExperimentId()).compareTo(other.isSetExperimentId());
+      lastComparison = Boolean.valueOf(isSetTaskId()).compareTo(other.isSetTaskId());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetExperimentId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.experimentId, other.experimentId);
+      if (isSetTaskId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.taskId, other.taskId);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -2743,14 +2743,14 @@ public class OrchestratorService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getTaskForExperiment_args(");
+      StringBuilder sb = new StringBuilder("getTaskDetails_args(");
       boolean first = true;
 
-      sb.append("experimentId:");
-      if (this.experimentId == null) {
+      sb.append("taskId:");
+      if (this.taskId == null) {
         sb.append("null");
       } else {
-        sb.append(this.experimentId);
+        sb.append(this.taskId);
       }
       first = false;
       sb.append(")");
@@ -2759,8 +2759,8 @@ public class OrchestratorService {
 
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
-      if (experimentId == null) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'experimentId' was not present! Struct: " + toString());
+      if (taskId == null) {
+        throw new org.apache.thrift.protocol.TProtocolException("Required field 'taskId' was not present! Struct: " + toString());
       }
       // check for sub-struct validity
     }
@@ -2781,15 +2781,15 @@ public class OrchestratorService {
       }
     }
 
-    private static class getTaskForExperiment_argsStandardSchemeFactory implements SchemeFactory {
-      public getTaskForExperiment_argsStandardScheme getScheme() {
-        return new getTaskForExperiment_argsStandardScheme();
+    private static class getTaskDetails_argsStandardSchemeFactory implements SchemeFactory {
+      public getTaskDetails_argsStandardScheme getScheme() {
+        return new getTaskDetails_argsStandardScheme();
       }
     }
 
-    private static class getTaskForExperiment_argsStandardScheme extends StandardScheme<getTaskForExperiment_args> {
+    private static class getTaskDetails_argsStandardScheme extends StandardScheme<getTaskDetails_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getTaskForExperiment_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getTaskDetails_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -2799,10 +2799,10 @@ public class OrchestratorService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // EXPERIMENT_ID
+            case 1: // TASK_ID
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.experimentId = iprot.readString();
-                struct.setExperimentIdIsSet(true);
+                struct.taskId = iprot.readString();
+                struct.setTaskIdIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -2818,13 +2818,13 @@ public class OrchestratorService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getTaskForExperiment_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getTaskDetails_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.experimentId != null) {
-          oprot.writeFieldBegin(EXPERIMENT_ID_FIELD_DESC);
-          oprot.writeString(struct.experimentId);
+        if (struct.taskId != null) {
+          oprot.writeFieldBegin(TASK_ID_FIELD_DESC);
+          oprot.writeString(struct.taskId);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -2833,40 +2833,40 @@ public class OrchestratorService {
 
     }
 
-    private static class getTaskForExperiment_argsTupleSchemeFactory implements SchemeFactory {
-      public getTaskForExperiment_argsTupleScheme getScheme() {
-        return new getTaskForExperiment_argsTupleScheme();
+    private static class getTaskDetails_argsTupleSchemeFactory implements SchemeFactory {
+      public getTaskDetails_argsTupleScheme getScheme() {
+        return new getTaskDetails_argsTupleScheme();
       }
     }
 
-    private static class getTaskForExperiment_argsTupleScheme extends TupleScheme<getTaskForExperiment_args> {
+    private static class getTaskDetails_argsTupleScheme extends TupleScheme<getTaskDetails_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getTaskForExperiment_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getTaskDetails_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
-        oprot.writeString(struct.experimentId);
+        oprot.writeString(struct.taskId);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getTaskForExperiment_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getTaskDetails_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        struct.experimentId = iprot.readString();
-        struct.setExperimentIdIsSet(true);
+        struct.taskId = iprot.readString();
+        struct.setTaskIdIsSet(true);
       }
     }
 
   }
 
-  public static class getTaskForExperiment_result implements org.apache.thrift.TBase<getTaskForExperiment_result, getTaskForExperiment_result._Fields>, java.io.Serializable, Cloneable, Comparable<getTaskForExperiment_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getTaskForExperiment_result");
+  public static class getTaskDetails_result implements org.apache.thrift.TBase<getTaskDetails_result, getTaskDetails_result._Fields>, java.io.Serializable, Cloneable, Comparable<getTaskDetails_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getTaskDetails_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
     private static final org.apache.thrift.protocol.TField OSE_FIELD_DESC = new org.apache.thrift.protocol.TField("ose", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getTaskForExperiment_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getTaskForExperiment_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new getTaskDetails_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getTaskDetails_resultTupleSchemeFactory());
     }
 
     public org.apache.airavata.sga.commons.db.model.TaskStateEntity success; // required
@@ -2942,13 +2942,13 @@ public class OrchestratorService {
       tmpMap.put(_Fields.OSE, new org.apache.thrift.meta_data.FieldMetaData("ose", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTaskForExperiment_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTaskDetails_result.class, metaDataMap);
     }
 
-    public getTaskForExperiment_result() {
+    public getTaskDetails_result() {
     }
 
-    public getTaskForExperiment_result(
+    public getTaskDetails_result(
       org.apache.airavata.sga.commons.db.model.TaskStateEntity success,
       OrchestratorServiceException ose)
     {
@@ -2960,7 +2960,7 @@ public class OrchestratorService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getTaskForExperiment_result(getTaskForExperiment_result other) {
+    public getTaskDetails_result(getTaskDetails_result other) {
       if (other.isSetSuccess()) {
         this.success = new org.apache.airavata.sga.commons.db.model.TaskStateEntity(other.success);
       }
@@ -2969,8 +2969,8 @@ public class OrchestratorService {
       }
     }
 
-    public getTaskForExperiment_result deepCopy() {
-      return new getTaskForExperiment_result(this);
+    public getTaskDetails_result deepCopy() {
+      return new getTaskDetails_result(this);
     }
 
     @Override
@@ -2983,7 +2983,7 @@ public class OrchestratorService {
       return this.success;
     }
 
-    public getTaskForExperiment_result setSuccess(org.apache.airavata.sga.commons.db.model.TaskStateEntity success) {
+    public getTaskDetails_result setSuccess(org.apache.airavata.sga.commons.db.model.TaskStateEntity success) {
       this.success = success;
       return this;
     }
@@ -3007,7 +3007,7 @@ public class OrchestratorService {
       return this.ose;
     }
 
-    public getTaskForExperiment_result setOse(OrchestratorServiceException ose) {
+    public getTaskDetails_result setOse(OrchestratorServiceException ose) {
       this.ose = ose;
       return this;
     }
@@ -3079,12 +3079,12 @@ public class OrchestratorService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getTaskForExperiment_result)
-        return this.equals((getTaskForExperiment_result)that);
+      if (that instanceof getTaskDetails_result)
+        return this.equals((getTaskDetails_result)that);
       return false;
     }
 
-    public boolean equals(getTaskForExperiment_result that) {
+    public boolean equals(getTaskDetails_result that) {
       if (that == null)
         return false;
 
@@ -3127,7 +3127,7 @@ public class OrchestratorService {
     }
 
     @Override
-    public int compareTo(getTaskForExperiment_result other) {
+    public int compareTo(getTaskDetails_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -3171,7 +3171,7 @@ public class OrchestratorService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getTaskForExperiment_result(");
+      StringBuilder sb = new StringBuilder("getTaskDetails_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -3217,15 +3217,15 @@ public class OrchestratorService {
       }
     }
 
-    private static class getTaskForExperiment_resultStandardSchemeFactory implements SchemeFactory {
-      public getTaskForExperiment_resultStandardScheme getScheme() {
-        return new getTaskForExperiment_resultStandardScheme();
+    private static class getTaskDetails_resultStandardSchemeFactory implements SchemeFactory {
+      public getTaskDetails_resultStandardScheme getScheme() {
+        return new getTaskDetails_resultStandardScheme();
       }
     }
 
-    private static class getTaskForExperiment_resultStandardScheme extends StandardScheme<getTaskForExperiment_result> {
+    private static class getTaskDetails_resultStandardScheme extends StandardScheme<getTaskDetails_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getTaskForExperiment_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getTaskDetails_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -3264,7 +3264,7 @@ public class OrchestratorService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getTaskForExperiment_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getTaskDetails_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -3284,16 +3284,16 @@ public class OrchestratorService {
 
     }
 
-    private static class getTaskForExperiment_resultTupleSchemeFactory implements SchemeFactory {
-      public getTaskForExperiment_resultTupleScheme getScheme() {
-        return new getTaskForExperiment_resultTupleScheme();
+    private static class getTaskDetails_resultTupleSchemeFactory implements SchemeFactory {
+      public getTaskDetails_resultTupleScheme getScheme() {
+        return new getTaskDetails_resultTupleScheme();
       }
     }
 
-    private static class getTaskForExperiment_resultTupleScheme extends TupleScheme<getTaskForExperiment_result> {
+    private static class getTaskDetails_resultTupleScheme extends TupleScheme<getTaskDetails_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getTaskForExperiment_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getTaskDetails_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -3312,7 +3312,7 @@ public class OrchestratorService {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getTaskForExperiment_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getTaskDetails_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
