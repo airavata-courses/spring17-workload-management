@@ -6,6 +6,7 @@ import org.apache.airavata.sga.graphdb.impl.Neo4JJavaDbOperation;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagePublisher;
 import org.apache.airavata.sga.graphdb.messaging.OrchestratorMessagingFactory;
 import org.apache.airavata.sga.graphdb.service.OrchestratorService;
+import org.apache.airavata.sga.graphdb.service.OrchestratorService.Iface;
 import org.apache.airavata.sga.graphdb.utils.DagCreation;
 import org.apache.airavata.sga.graphdb.utils.ZKUtils;
 import org.apache.airavata.sga.messaging.service.core.Subscriber;
@@ -25,6 +26,9 @@ public class OrchestratorRunner {
     private static OrchestratorMessagePublisher orchestratorMessagePublisher = new OrchestratorMessagePublisher();
     private Subscriber subscriber;
 
+    private static OrchestratorService.Processor<Iface> processor;
+    private static OrchestratorServerHandler handler;
+
     private void startOrchestratorRunner() {
 
         try {
@@ -41,16 +45,16 @@ public class OrchestratorRunner {
         }
     }
 
-    private void startOrchestratorServer() {
+    private static void startOrchestratorServer(OrchestratorService.Processor<Iface> processor) {
         try {
-            logger.info("OrchestratorService starting simple-server listening to port 9091");
-            OrchestratorService.Processor<OrchestratorService.Iface> processor =
-                    new OrchestratorService.Processor<OrchestratorService.Iface>(new OrchestratorServerHandler());
-            TServerTransport serverTransport = new TServerSocket(9091);
+            logger.info("OrchestratorService starting simple-server listening to port 9090");
+            TServerTransport serverTransport = new TServerSocket(9090);
             TServer server = new TSimpleServer(new TServer.Args(serverTransport).processor(processor));
             server.serve();
         } catch (Exception ex) {
             logger.error("Something went wrong starting Orchestrator Server. Error: " + ex.getMessage(), ex);
+        } finally {
+            logger.info("OrchestratorService stopped!");
         }
     }
 
@@ -77,6 +81,9 @@ public class OrchestratorRunner {
         Neo4JJavaDbOperation neo4JJavaDbOperation = new Neo4JJavaDbOperation();
         SchedulingRequest schedulingRequest = null;
 
+        handler = new OrchestratorServerHandler();
+        processor = new OrchestratorService.Processor<Iface>(handler);
+
         try {
             Runnable runner = new Runnable() {
                 @Override
@@ -97,8 +104,7 @@ public class OrchestratorRunner {
             Runnable thriftServer = new Runnable() {
                 @Override
                 public void run() {
-                    OrchestratorRunner orchestratorRunner = new OrchestratorRunner();
-                    orchestratorRunner.startOrchestratorServer();
+                    startOrchestratorServer(processor);
                 }
             };
 
@@ -112,7 +118,7 @@ public class OrchestratorRunner {
 
             // start thrift server
             logger.info("Starting Orchestrator Thrift Server.");
-            new Thread(thriftServer).start();;
+            new Thread(thriftServer).start();
         } catch (Exception ex) {
             logger.error("Something went wrong with the Orchestrator runner. Error: " + ex, ex);
         }

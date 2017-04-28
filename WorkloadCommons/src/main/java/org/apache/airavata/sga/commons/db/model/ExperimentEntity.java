@@ -57,9 +57,10 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
   private static final org.apache.thrift.protocol.TField EXPERIMENT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentId", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField EXPERIMENT_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentName", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField EXPERIMENT_STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentStatus", org.apache.thrift.protocol.TType.STRING, (short)3);
-  private static final org.apache.thrift.protocol.TField EXPERIMENT_START_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentStartTime", org.apache.thrift.protocol.TType.I64, (short)4);
-  private static final org.apache.thrift.protocol.TField EXPERIMENT_END_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentEndTime", org.apache.thrift.protocol.TType.I64, (short)5);
-  private static final org.apache.thrift.protocol.TField EXPERIMENT_LAST_UPDATED_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentLastUpdatedTime", org.apache.thrift.protocol.TType.I64, (short)6);
+  private static final org.apache.thrift.protocol.TField EXPERIMENT_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentType", org.apache.thrift.protocol.TType.STRING, (short)4);
+  private static final org.apache.thrift.protocol.TField EXPERIMENT_START_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentStartTime", org.apache.thrift.protocol.TType.I64, (short)5);
+  private static final org.apache.thrift.protocol.TField EXPERIMENT_END_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentEndTime", org.apache.thrift.protocol.TType.I64, (short)6);
+  private static final org.apache.thrift.protocol.TField EXPERIMENT_LAST_UPDATED_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("experimentLastUpdatedTime", org.apache.thrift.protocol.TType.I64, (short)7);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -70,6 +71,7 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
   public String experimentId; // required
   public String experimentName; // required
   public String experimentStatus; // required
+  public String experimentType; // required
   public long experimentStartTime; // required
   public long experimentEndTime; // optional
   public long experimentLastUpdatedTime; // optional
@@ -79,9 +81,10 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
     EXPERIMENT_ID((short)1, "experimentId"),
     EXPERIMENT_NAME((short)2, "experimentName"),
     EXPERIMENT_STATUS((short)3, "experimentStatus"),
-    EXPERIMENT_START_TIME((short)4, "experimentStartTime"),
-    EXPERIMENT_END_TIME((short)5, "experimentEndTime"),
-    EXPERIMENT_LAST_UPDATED_TIME((short)6, "experimentLastUpdatedTime");
+    EXPERIMENT_TYPE((short)4, "experimentType"),
+    EXPERIMENT_START_TIME((short)5, "experimentStartTime"),
+    EXPERIMENT_END_TIME((short)6, "experimentEndTime"),
+    EXPERIMENT_LAST_UPDATED_TIME((short)7, "experimentLastUpdatedTime");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -102,11 +105,13 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
           return EXPERIMENT_NAME;
         case 3: // EXPERIMENT_STATUS
           return EXPERIMENT_STATUS;
-        case 4: // EXPERIMENT_START_TIME
+        case 4: // EXPERIMENT_TYPE
+          return EXPERIMENT_TYPE;
+        case 5: // EXPERIMENT_START_TIME
           return EXPERIMENT_START_TIME;
-        case 5: // EXPERIMENT_END_TIME
+        case 6: // EXPERIMENT_END_TIME
           return EXPERIMENT_END_TIME;
-        case 6: // EXPERIMENT_LAST_UPDATED_TIME
+        case 7: // EXPERIMENT_LAST_UPDATED_TIME
           return EXPERIMENT_LAST_UPDATED_TIME;
         default:
           return null;
@@ -162,6 +167,8 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.EXPERIMENT_STATUS, new org.apache.thrift.meta_data.FieldMetaData("experimentStatus", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.EXPERIMENT_TYPE, new org.apache.thrift.meta_data.FieldMetaData("experimentType", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.EXPERIMENT_START_TIME, new org.apache.thrift.meta_data.FieldMetaData("experimentStartTime", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64        , "long")));
     tmpMap.put(_Fields.EXPERIMENT_END_TIME, new org.apache.thrift.meta_data.FieldMetaData("experimentEndTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
@@ -179,12 +186,14 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
     String experimentId,
     String experimentName,
     String experimentStatus,
+    String experimentType,
     long experimentStartTime)
   {
     this();
     this.experimentId = experimentId;
     this.experimentName = experimentName;
     this.experimentStatus = experimentStatus;
+    this.experimentType = experimentType;
     this.experimentStartTime = experimentStartTime;
     setExperimentStartTimeIsSet(true);
   }
@@ -203,6 +212,9 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
     if (other.isSetExperimentStatus()) {
       this.experimentStatus = other.experimentStatus;
     }
+    if (other.isSetExperimentType()) {
+      this.experimentType = other.experimentType;
+    }
     this.experimentStartTime = other.experimentStartTime;
     this.experimentEndTime = other.experimentEndTime;
     this.experimentLastUpdatedTime = other.experimentLastUpdatedTime;
@@ -217,6 +229,7 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
     this.experimentId = null;
     this.experimentName = null;
     this.experimentStatus = null;
+    this.experimentType = null;
     setExperimentStartTimeIsSet(false);
     this.experimentStartTime = 0;
     setExperimentEndTimeIsSet(false);
@@ -294,6 +307,30 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
   public void setExperimentStatusIsSet(boolean value) {
     if (!value) {
       this.experimentStatus = null;
+    }
+  }
+
+  public String getExperimentType() {
+    return this.experimentType;
+  }
+
+  public ExperimentEntity setExperimentType(String experimentType) {
+    this.experimentType = experimentType;
+    return this;
+  }
+
+  public void unsetExperimentType() {
+    this.experimentType = null;
+  }
+
+  /** Returns true if field experimentType is set (has been assigned a value) and false otherwise */
+  public boolean isSetExperimentType() {
+    return this.experimentType != null;
+  }
+
+  public void setExperimentTypeIsSet(boolean value) {
+    if (!value) {
+      this.experimentType = null;
     }
   }
 
@@ -392,6 +429,14 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
       }
       break;
 
+    case EXPERIMENT_TYPE:
+      if (value == null) {
+        unsetExperimentType();
+      } else {
+        setExperimentType((String)value);
+      }
+      break;
+
     case EXPERIMENT_START_TIME:
       if (value == null) {
         unsetExperimentStartTime();
@@ -430,6 +475,9 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
     case EXPERIMENT_STATUS:
       return getExperimentStatus();
 
+    case EXPERIMENT_TYPE:
+      return getExperimentType();
+
     case EXPERIMENT_START_TIME:
       return getExperimentStartTime();
 
@@ -456,6 +504,8 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
       return isSetExperimentName();
     case EXPERIMENT_STATUS:
       return isSetExperimentStatus();
+    case EXPERIMENT_TYPE:
+      return isSetExperimentType();
     case EXPERIMENT_START_TIME:
       return isSetExperimentStartTime();
     case EXPERIMENT_END_TIME:
@@ -503,6 +553,15 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
       if (!(this_present_experimentStatus && that_present_experimentStatus))
         return false;
       if (!this.experimentStatus.equals(that.experimentStatus))
+        return false;
+    }
+
+    boolean this_present_experimentType = true && this.isSetExperimentType();
+    boolean that_present_experimentType = true && that.isSetExperimentType();
+    if (this_present_experimentType || that_present_experimentType) {
+      if (!(this_present_experimentType && that_present_experimentType))
+        return false;
+      if (!this.experimentType.equals(that.experimentType))
         return false;
     }
 
@@ -554,6 +613,11 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
     list.add(present_experimentStatus);
     if (present_experimentStatus)
       list.add(experimentStatus);
+
+    boolean present_experimentType = true && (isSetExperimentType());
+    list.add(present_experimentType);
+    if (present_experimentType)
+      list.add(experimentType);
 
     boolean present_experimentStartTime = true;
     list.add(present_experimentStartTime);
@@ -607,6 +671,16 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
     }
     if (isSetExperimentStatus()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.experimentStatus, other.experimentStatus);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetExperimentType()).compareTo(other.isSetExperimentType());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetExperimentType()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.experimentType, other.experimentType);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -685,6 +759,14 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
     }
     first = false;
     if (!first) sb.append(", ");
+    sb.append("experimentType:");
+    if (this.experimentType == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.experimentType);
+    }
+    first = false;
+    if (!first) sb.append(", ");
     sb.append("experimentStartTime:");
     sb.append(this.experimentStartTime);
     first = false;
@@ -714,6 +796,9 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
     }
     if (experimentStatus == null) {
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'experimentStatus' was not present! Struct: " + toString());
+    }
+    if (experimentType == null) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'experimentType' was not present! Struct: " + toString());
     }
     // alas, we cannot check 'experimentStartTime' because it's a primitive and you chose the non-beans generator.
     // check for sub-struct validity
@@ -779,7 +864,15 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 4: // EXPERIMENT_START_TIME
+          case 4: // EXPERIMENT_TYPE
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.experimentType = iprot.readString();
+              struct.setExperimentTypeIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 5: // EXPERIMENT_START_TIME
             if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
               struct.experimentStartTime = iprot.readI64();
               struct.setExperimentStartTimeIsSet(true);
@@ -787,7 +880,7 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 5: // EXPERIMENT_END_TIME
+          case 6: // EXPERIMENT_END_TIME
             if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
               struct.experimentEndTime = iprot.readI64();
               struct.setExperimentEndTimeIsSet(true);
@@ -795,7 +888,7 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 6: // EXPERIMENT_LAST_UPDATED_TIME
+          case 7: // EXPERIMENT_LAST_UPDATED_TIME
             if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
               struct.experimentLastUpdatedTime = iprot.readI64();
               struct.setExperimentLastUpdatedTimeIsSet(true);
@@ -836,6 +929,11 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
         oprot.writeString(struct.experimentStatus);
         oprot.writeFieldEnd();
       }
+      if (struct.experimentType != null) {
+        oprot.writeFieldBegin(EXPERIMENT_TYPE_FIELD_DESC);
+        oprot.writeString(struct.experimentType);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldBegin(EXPERIMENT_START_TIME_FIELD_DESC);
       oprot.writeI64(struct.experimentStartTime);
       oprot.writeFieldEnd();
@@ -869,6 +967,7 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
       oprot.writeString(struct.experimentId);
       oprot.writeString(struct.experimentName);
       oprot.writeString(struct.experimentStatus);
+      oprot.writeString(struct.experimentType);
       oprot.writeI64(struct.experimentStartTime);
       BitSet optionals = new BitSet();
       if (struct.isSetExperimentEndTime()) {
@@ -895,6 +994,8 @@ public class ExperimentEntity implements org.apache.thrift.TBase<ExperimentEntit
       struct.setExperimentNameIsSet(true);
       struct.experimentStatus = iprot.readString();
       struct.setExperimentStatusIsSet(true);
+      struct.experimentType = iprot.readString();
+      struct.setExperimentTypeIsSet(true);
       struct.experimentStartTime = iprot.readI64();
       struct.setExperimentStartTimeIsSet(true);
       BitSet incoming = iprot.readBitSet(2);

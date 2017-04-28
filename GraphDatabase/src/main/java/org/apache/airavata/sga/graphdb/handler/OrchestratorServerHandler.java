@@ -95,12 +95,12 @@ public class OrchestratorServerHandler implements OrchestratorService.Iface {
 
     private ExperimentEntity mapToExperimentEntity(org.apache.airavata.sga.graphdb.entity.ExperimentEntity experimentEntity) {
         ExperimentEntity entity = null;
-        logger.info("OrchestratorServerHandler.mapToExperimentEntity | ExperimentEntity: " + experimentEntity);
         if (experimentEntity != null) {
             entity = new ExperimentEntity();
             entity.setExperimentId(experimentEntity.getExperimentId());
             entity.setExperimentName(experimentEntity.getExperimentName());
             entity.setExperimentStatus(experimentEntity.getExperimentStatus());
+            entity.setExperimentType(experimentEntity.getExperimentType());
             if (experimentEntity.getExperimentStartTime() != null) {
                 entity.setExperimentStartTime(experimentEntity.getExperimentStartTime().getTime());
             }
@@ -116,7 +116,6 @@ public class OrchestratorServerHandler implements OrchestratorService.Iface {
 
     private TaskStateEntity mapToTaskStateEntity(org.apache.airavata.sga.graphdb.entity.TaskStateEntity taskStateEntity) {
         TaskStateEntity entity = null;
-        logger.info("OrchestratorServerHandler.mapToTaskStateEntity | taskStateEntity: " + taskStateEntity);
         if (taskStateEntity != null) {
             entity = new TaskStateEntity();
             entity.setTaskId(taskStateEntity.getTaskId());
