@@ -18,8 +18,6 @@ public class OrchestratorServiceClient {
 		} catch (Exception ex) {
 			logger.error("Failed to get experiment, reason: {}", ex.getMessage(), ex);
 			throw ex;
-		} finally {
-			OrchestratorClientFactory.closeTransport();
 		}
 	}
 	
@@ -30,8 +28,6 @@ public class OrchestratorServiceClient {
 		} catch (Exception ex) {
 			logger.error("Failed to submit job, reason: {}", ex.getMessage(), ex);
 			throw ex;
-		} finally {
-			OrchestratorClientFactory.closeTransport();
 		}
 	}
 	
@@ -42,8 +38,6 @@ public class OrchestratorServiceClient {
 		} catch (Exception ex) {
 			logger.error("Failed to get task, reason: {}", ex.getMessage(), ex);
 			throw ex;
-		} finally {
-			OrchestratorClientFactory.closeTransport();
 		}
 	}
 	
@@ -54,8 +48,6 @@ public class OrchestratorServiceClient {
 		} catch (Exception ex) {
 			logger.error("Failed to get experiments, reason: {}", ex.getMessage(), ex);
 			throw ex;
-		} finally {
-			OrchestratorClientFactory.closeTransport();
 		}
 	}
 	
@@ -66,8 +58,6 @@ public class OrchestratorServiceClient {
 		} catch (Exception ex) {
 			logger.error("Failed to get tasks for experiment, reason: {}", ex.getMessage(), ex);
 			throw ex;
-		} finally {
-			OrchestratorClientFactory.closeTransport();
 		}
 	}
 }
