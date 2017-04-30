@@ -1,6 +1,9 @@
 package org.apache.airavata.sga.data.staging.task.entity;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
+import java.io.StringWriter;
 
 /**
  * Created by Ajinkya on 2/16/17.
@@ -23,10 +26,14 @@ public class ServerInfo {
         this.port = port;
         //this.privateKey = privateKey;
 
-        this.privateKey = new File(
-                ServerInfo.class.getClassLoader().getResource("dcoskey").getFile()
-        ).getAbsolutePath();
-
+        try {
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(ServerInfo.class.getClassLoader().getResourceAsStream("dcoskey"), writer, "UTF-8");
+            this.privateKey = writer.toString();
+//            this.privateKey = IOUtils.toString(ServerInfo.class.getClassLoader().getResourceAsStream("dcoskey"), "UTF-8");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public String getHost() {
