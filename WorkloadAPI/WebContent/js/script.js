@@ -249,7 +249,7 @@ function renderTaskListForExperiment() {
 }
 
 function getformattedDate(date) {
-	if (date == null) {
+	if (date == 0 || date == null) {
 		return 'yet to end';
 	} else {
 		date = new Date(date);
