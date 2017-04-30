@@ -1,4 +1,4 @@
-from goshenoy/workloadbase:1.0
+from goshenoy/workloadbase:2.0
 MAINTAINER "Gourav Shenoy"
 
 WORKDIR /spring17-workload-management

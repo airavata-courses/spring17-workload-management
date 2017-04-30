@@ -1,4 +1,4 @@
-FROM goshenoy/workloadbase:1.0
+FROM goshenoy/workloadbase:2.0
 MAINTAINER "Ajinkya Dhamnaskar"
 
 #Args
