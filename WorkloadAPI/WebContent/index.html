@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Distributed Task Execution</title>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" />
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body style="padding-top: 70px;">
+	<!-- Fixed navbar -->
+	<nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Apache Airavata : Distributed
+					Task Execution</a>
+			</div>
+			<!-- /navbar-header -->
+
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/SGA_Apex">Home</a></li>
+					<li><a target="_blank"
+						href="https://github.com/airavata-courses/spring17-workload-management/wiki">Project
+							Wiki</a></li>
+					<li><a target="_blank"
+						href="https://github.com/airavata-courses/spring17-workload-management/tree/develop">Source
+							Code</a></li>
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</nav>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-7">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Experiment List</h3>
+					</div>
+					<div class="panel-body" id="experimentListDiv">
+						<!-- Existing Experiments Listed Here -->
+					</div>
+				</div>
+
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Submit A Job</h3>
+					</div>
+					<div class="panel-body">
+						<form id="submitJob" action="">
+							<div id="appSelect" class="form-group row col-xs-8">
+								<label for="application">Select an Application</label> <select
+									id="application">
+									<option value="BIOLOGY">Biology</option>
+									<option value="CHEMISTRY">Chemistry</option>
+									<option value="PHYSICS">Physics</option>
+									<option value="MATHS">Maths</option>
+								</select>
+							</div>
+							<!-- /form-group -->
+
+							<!-- buttons -->
+							<div class="form-group row col-xs-8">
+								<button type="submit" class="btn btn-success">Submit
+									Job</button>
+								<button type="reset" class="btn btn-warning">Clear Form</button>
+							</div>
+						</form>
+						<!-- /form -->
+
+						<!-- Overlay Div -->
+						<div id=overlay style="visibility: hidden">
+							<table width=100% height=100%>
+								<tr>
+									<td style="text-align: center; vertical-align: middle;"><img
+										src="https://s-media-cache-ak0.pinimg.com/originals/05/08/77/05087768293dd7ff414c45e950896b54.gif"></img></td>
+								</tr>
+							</table>
+						</div>
+
+					</div>
+					<!-- /panel-body -->
+
+					<div id="submitJobResp" class="panel-footer" style="display: none;"></div>
+					<!-- /panel-footer -->
+				</div>
+				<!-- panel -->
+
+				<!-- Modal -->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+					aria-labelledby="myModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 class="modal-title" id="myModalLabel">Submit Job
+									Response</h4>
+							</div>
+							<div class="modal-body"></div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">Close</button>
+								<!-- <button type="button" class="btn btn-primary">Continue</button> -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /modal -->
+
+				<!-- Error Modal -->
+				<div class="modal fade" id="errorModal" tabindex="-1" role="dialog"
+					aria-labelledby="errorModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 class="modal-title" id="errorModalLabel">Error Occured</h4>
+							</div>
+							<div class="modal-body"></div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /error-modal -->
+			</div>
+			<!-- /col-md-7 -->
+
+			<div class="col-md-5">
+				<div id="monitoringDiv" class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Job Monitoring</h3>
+					</div>
+					<div class="panel-body">
+						<div class="progress">
+							<div class="progress-bar progress-bar-striped active"
+								role="progressbar" aria-valuenow="0" aria-valuemin="0"
+								aria-valuemax="100" style="width: 0%" disabled></div>
+						</div>
+						<div id="taskListDiv">
+							<!-- selected experiment task-audit-trail displayed here -->
+						</div>
+						<div id="expMonitoring" style="text-align: center">
+							<!-- experimentId comes here -->
+						</div>
+					</div>
+					<!-- /panel-body -->
+				</div>
+				<!-- panel-1 -->
+			</div>
+			<!-- /col-md-5 -->
+		</div>
+		<!-- /row -->
+	</div>
+	<!-- /container -->
+
+
+
+	<!-- Jquery Plugin -->
+	<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+	<!-- Bootstrap Javascript -->
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+	<!-- Custom Javascript -->
+	<script src="js/script.js"></script>
+</body>
+</html>

@@ -34,3 +34,7 @@ local.properties
 
 # Locally stored "Eclipse launch configurations"
 *.launch
+
+#idea specific git ignore
+.idea
+*.iml
